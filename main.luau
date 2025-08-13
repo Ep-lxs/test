@@ -1052,6 +1052,7 @@ local isfolder = isfolder :: (string) -> boolean
 local makefolder = makefolder :: (string) -> ()
 local writefile = writefile :: (string, string) -> ()
 local readfile = readfile :: (string) -> string?
+local isfile = isfile :: (string) -> string?
 
 if RunService:IsStudio() then
 	local WORKSPACE = Instance.new("Folder")
@@ -3980,7 +3981,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	local settings_dir = `{dir}/settings.json`
 	local function window_get_settings(): Settings
 		ensure_folder(dir)
-		local settings_content = readfile(settings_dir)
+		local settings_content = isfile(settings_dir) and readfile(settings_dir)
 		if not settings_content then
 			writefile(settings_dir, HttpService:JSONEncode(DEFAULT_SETTINGS))
 			return DEFAULT_SETTINGS
