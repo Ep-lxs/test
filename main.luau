@@ -4095,6 +4095,8 @@ local function window_new(self: Library, props: WindowProps): Window
 		GetThemes = window_get_themes,
 		LoadThemes = window_load_themes,
 
+		GetSettings = window_get_settings,
+
 		Flags = {},
 
 		title = title,
@@ -4530,11 +4532,6 @@ local function window_new(self: Library, props: WindowProps): Window
 	local theme = settings.theme
 	if theme then
 		window_load_theme(window :: Window, theme)
-	end
-
-	local config = settings.config
-	if config then
-		window_load_config(window :: Window, config)
 	end
 
 	return window
