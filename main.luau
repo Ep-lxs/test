@@ -3939,7 +3939,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		ensure_folder(config_directory)
 
 		local config_name = name or "default"
-		local content = readfile(`{config_directory}/{config_name}.config`)
+		local content = isfile(`{config_directory}/{config_name}.config`) and readfile(`{config_directory}/{config_name}.config`)
 		assert(content, `config file not found`)
 
 		local flags = decode_config(content)
