@@ -1544,10 +1544,6 @@ local fonts = {
 	-- inter = REGISTER_FONT "rbxassetid://12187365364",
 }
 
-local function ENSURE_IMAGE(image: string): string
-	return if getcustomasset then getcustomasset(image) else image
-end
-
 local function NEXT_ORDER<Props>(section: Section, props: Props & { Order: number? }): number
 	local order = props.Order
 	if order then
@@ -3920,6 +3916,21 @@ local function window_new(self: Library, props: WindowProps): Window
 		if not isfolder(path) then
 			makefolder(path)
 		end
+	end
+
+	local function ENSURE_IMAGE(image: string): string
+		local imageDir = `{dir}/lovely.png`
+
+		if not isfile(imageDir) then
+			local httpRequest = http_request or request
+			local response = pcall(httpRequest, { Url = image, Method = "GET" })
+			
+			if response and response.Body then 
+				writefile(imageDir, response.Body)
+			end 
+		end
+
+		return if getcustomasset then getcustomasset(imageDir) else image
 	end
 
 	export type Settings = {
