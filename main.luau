@@ -3922,6 +3922,31 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 	end
 
+	export type Settings = {
+		theme: string?,
+		config: string?,
+	}
+	local DEFAULT_SETTINGS: Settings = {
+		theme = "Dark",
+		-- config = "default",
+	}
+
+	local settings_dir = `{dir}/settings.json`
+	local function window_get_settings(): Settings
+		ensure_folder(dir)
+		local settings_content = isfile(settings_dir) and readfile(settings_dir)
+		if not settings_content then
+			writefile(settings_dir, HttpService:JSONEncode(DEFAULT_SETTINGS))
+			return DEFAULT_SETTINGS
+		end
+		return HttpService:JSONDecode(settings_content) or DEFAULT_SETTINGS
+	end
+
+	local function window_set_settings(settings: Settings)
+		ensure_folder(dir)
+		writefile(settings_dir, HttpService:JSONEncode(settings))
+	end
+
 	local function window_get_config(self: Window): string
 		return encode_config(self.Flags)
 	end
@@ -3938,7 +3963,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		ensure_folder(dir)
 		ensure_folder(config_directory)
 
-		local config_name = name or "default"
+		local config_name = name or window_get_settings().config or "default"
 		local content = isfile(`{config_directory}/{config_name}.config`) and readfile(`{config_directory}/{config_name}.config`)
 		assert(content, `config file not found`)
 
@@ -3965,26 +3990,6 @@ local function window_new(self: Library, props: WindowProps): Window
 			configs[file_name] = content
 		end
 		return configs
-	end
-
-	export type Settings = {
-		theme: string?,
-		config: string?,
-	}
-	local DEFAULT_SETTINGS: Settings = {
-		theme = "Dark",
-		-- config = "default",
-	}
-
-	local settings_dir = `{dir}/settings.json`
-	local function window_get_settings(): Settings
-		ensure_folder(dir)
-		local settings_content = isfile(settings_dir) and readfile(settings_dir)
-		if not settings_content then
-			writefile(settings_dir, HttpService:JSONEncode(DEFAULT_SETTINGS))
-			return DEFAULT_SETTINGS
-		end
-		return HttpService:JSONDecode(settings_content) or DEFAULT_SETTINGS
 	end
 
 	local function ser_theme(theme: ThemeData)
@@ -4096,6 +4101,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		LoadThemes = window_load_themes,
 
 		GetSettings = window_get_settings,
+		SetSettings = window_set_settings,
 
 		Flags = {},
 
