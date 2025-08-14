@@ -3919,18 +3919,21 @@ local function window_new(self: Library, props: WindowProps): Window
 	end
 
 	local function ENSURE_IMAGE(image: string): string
-		local imageDir = `{dir}/lovely.png`
+		if image:find("http") then
+			local imageDir = `{dir}/lovely.png`
 
-		if not isfile(imageDir) then
-			local httpRequest = http_request or request
-			local response = pcall(httpRequest, { Url = image, Method = "GET" })
-			
-			if response and response.Body then 
-				writefile(imageDir, response.Body)
-			end 
+			if not isfile(imageDir) then
+				local response = pcall(http_request or request, { Url = image, Method = "GET" })
+				
+				if response and response.Body then 
+					writefile(imageDir, response.Body)
+				end 
+			end
+
+			return getcustomasset and getcustomasset(imageDir)
+		else
+			return image
 		end
-
-		return if getcustomasset then getcustomasset(imageDir) else image
 	end
 
 	export type Settings = {
