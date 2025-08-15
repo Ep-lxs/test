@@ -3918,7 +3918,8 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 	end
 
-	local function ENSURE_IMAGE(image: string): string
+	function ENSURE_IMAGE(image: string): string
+		ensure_folder(dir)
 		if image:find("http") then
 			local imageDir = `{dir}/lovely.png`
 
