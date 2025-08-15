@@ -1564,6 +1564,35 @@ local function ELEMENT_FLAG<Props>(element: Element, section: Section, props: Pr
 	flags[flag_name] = element
 end
 
+local dir = props.Folder or props.Title
+local config_directory = `{dir}/configs`
+
+local function ensure_folder(path: string)
+	if not isfolder(path) then
+		makefolder(path)
+	end
+end
+
+local function ENSURE_IMAGE(image: string): string
+	ensure_folder(dir)
+	if image:find("http") then
+		local imageDir = `{dir}/lovely.png`
+
+		if not isfile(imageDir) then
+			local httpRequest = http_request or request
+			local response = httpRequest { Url = image, Method = "GET" }
+			
+			if response and response.Body then 
+				writefile(imageDir, response.Body)
+			end 
+		end
+
+		return getcustomasset and getcustomasset(imageDir)
+	else
+		return image
+	end
+end
+
 local GLOBAL_GUI
 local function ensure_gui(): ScreenGui
 	if GLOBAL_GUI then
@@ -3910,33 +3939,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		table.clear(self)
 	end
 
-	local dir = props.Folder or props.Title
 	local config_directory = `{dir}/configs`
-	local function ensure_folder(path: string)
-		if not isfolder(path) then
-			makefolder(path)
-		end
-	end
-
-	function ENSURE_IMAGE(image: string): string
-		ensure_folder(dir)
-		if image:find("http") then
-			local imageDir = `{dir}/lovely.png`
-
-			if not isfile(imageDir) then
-				local httpRequest = http_request or request
-				local response = httpRequest { Url = image, Method = "GET" }
-				
-				if response and response.Body then 
-					writefile(imageDir, response.Body)
-				end 
-			end
-
-			return getcustomasset and getcustomasset(imageDir)
-		else
-			return image
-		end
-	end
 
 	export type Settings = {
 		theme: string?,
