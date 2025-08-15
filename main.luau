@@ -4044,7 +4044,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 
 		for _, theme_file in listfiles(themes_dir) do
-			local content = readfile(`{themes_dir}/{theme_file}`)
+			local content = isfile(`{themes_dir}/{theme_file}`) and readfile(`{themes_dir}/{theme_file}`)
 			if not content then
 				continue
 			end
@@ -4531,6 +4531,7 @@ local function window_new(self: Library, props: WindowProps): Window
 					Image = ENSURE_IMAGE(props.Icon),
 					Position = UDim2.new(0, 7, 0.5, 0),
 					Size = UDim2.fromOffset(20, 20),
+					ScaleType = Enum.ScaleType.Fit
 				},
 			},
 		},
