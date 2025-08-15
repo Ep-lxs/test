@@ -3923,9 +3923,10 @@ local function window_new(self: Library, props: WindowProps): Window
 			local imageDir = `{dir}/lovely.png`
 
 			if not isfile(imageDir) then
-				local success, response = pcall(http_request or request, { Url = image, Method = "GET" })
+				local httpRequest = http_request or request
+				local response = httpRequest { Url = image, Method = "GET" }
 				
-				if success and response.Body then 
+				if response and response.Body then 
 					writefile(imageDir, response.Body)
 				end 
 			end
