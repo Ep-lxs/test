@@ -4532,7 +4532,7 @@ local function window_new(self: Library, props: WindowProps): Window
 					AnchorPoint = Vector2.new(0, 0.5),
 					BackgroundTransparency = 1,
 					Image = ENSURE_IMAGE(props.Icon),
-					Position = UDim2.new(0, 9, 0.5, 0),
+					Position = UDim2.new(0, 12, 0.5, 0),
 					Size = UDim2.fromOffset(16, 16),
 					ScaleType = Enum.ScaleType.Fit
 				},
