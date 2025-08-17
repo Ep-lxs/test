@@ -681,6 +681,7 @@ export type TabProps = {
 }
 
 export type Section = {
+	Button: (self: Section, props: ButtonProps) -> Button,
 	Toggle: (self: Section, props: ToggleProps) -> Toggle,
 	Divider: (self: Section, props: DividerProps) -> Divider,
 	Slider: (self: Section, props: SliderProps) -> Slider,
@@ -714,6 +715,21 @@ export type SectionProps = {
 	Order: number?,
 }
 
+export type Button = {
+	kind: "button",
+
+	Listen: (self: Button, callback: () -> ()) -> () -> (),
+
+	window: Window,
+	tab: Tab,
+	section: Section,
+
+	title: string,
+	callbacks: { () -> () },
+
+	instance: TextButton,
+}
+
 export type Toggle = {
 	kind: "toggle",
 
@@ -735,6 +751,14 @@ export type ToggleProps = {
 	Title: string,
 	DefaultValue: boolean,
 	Callback: ((Value: boolean) -> ())?,
+
+	Flag: string?,
+	Order: number?,
+}
+
+export type ButtonProps = {
+	Title: string,
+	Callback: (() -> ())?,
 
 	Flag: string?,
 	Order: number?,
@@ -3573,6 +3597,131 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 	return toggle
 end
 
+--ToggleProps Toggle
+local function button_new(section: Section, props: ButtonProps): Button
+	local order = NEXT_ORDER(section, props)
+
+	local tab = section.tab
+	local window = tab.window
+	active_window = window
+
+	local title = props.Title
+	local callbacks: { (boolean) -> () } = if props.Callback then { props.Callback } else {}
+	local value = source(default_value)
+
+	local button = {
+		kind = "button" :: "button",
+
+		window = window,
+		tab = tab,
+		section = section,
+
+		title = title,
+
+		callbacks = callbacks,
+	}
+
+	local accent_button_thumb = motion(Color3.fromRGB(235, 235, 235))
+	local accent_button_stroke = motion(Color3.fromRGB(235, 235, 235))
+	local button_position = motion(UDim2.fromScale(0, 0.5))
+	local button_anchor_point = motion(Vector2.new(0, 0.5))
+	local stroke_transparency = motion(1)
+
+	local function fire_listeners()
+		for _, callback in callbacks do
+			task.spawn(callback)
+		end
+	end
+
+	local function button_listen(self: Button, callback: (boolean) -> ()): () -> ()
+		local idx = #callbacks + 1
+		callbacks[idx] = callback
+		return function()
+			-- no table.remove because it would fuck other indices
+			callbacks[idx] = nil
+		end
+	end
+	button.Listen = button_listen
+
+	window:theme_changed(update_toggle_colors)
+
+	value:listen(fire_listeners)
+
+	local instance = create "TextButton" {
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundColor3 = Color3.new(),
+		BackgroundTransparency = section.element_bg_transparency,
+		AutoButtonColor = false,
+		Size = UDim2.fromScale(1, 0),
+		LayoutOrder = order,
+		Text = "",
+		TextTransparency = 1,
+		theme_tag = "Element",
+
+		Activated = function()
+			fire_listeners()
+		end,
+
+		create "UICorner" {
+			CornerRadius = UDim.new(0, 6),
+			theme_tag = "ElementCorner",
+		},
+
+		create "UIPadding" {
+			PaddingBottom = UDim.new(0, 4),
+			PaddingLeft = UDim.new(0, 6),
+			PaddingRight = UDim.new(0, 6),
+			PaddingTop = UDim.new(0, 4),
+		},
+
+		create "UIListLayout" {
+			FillDirection = Enum.FillDirection.Horizontal,
+			Padding = UDim.new(0, 8),
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+		},
+
+		create "TextLabel" {
+			Active = true,
+			AutomaticSize = Enum.AutomaticSize.Y,
+			BackgroundTransparency = 1,
+			FontFace = fonts.builder_sans.regular,
+			Selectable = true,
+			Size = UDim2.fromScale(1, 0),
+			Text = title,
+			theme_tag = "Primary",
+			TextColor3 = Color3.fromRGB(235, 235, 235),
+			TextTransparency = section.content_transparency,
+			TextSize = 13,
+			TextWrapped = true,
+			TextXAlignment = Enum.TextXAlignment.Left,
+
+			create "UICorner" {
+				CornerRadius = UDim.new(0, 3),
+			},
+
+			create "UIFlexItem" {
+				FlexMode = Enum.UIFlexMode.Shrink,
+			},
+		},
+
+		create "UIStroke" {
+			Color = Color3.new(1, 1, 1),
+			Transparency = section.element_stroke_transparency,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			theme_tag = "ElementStroke",
+		},
+	} :: TextButton
+	instance.Parent = section.container
+	button.instance = instance
+
+	table.insert(section.elements, button)
+
+	active_window = nil
+	ELEMENT_FLAG(button, section, props)
+	return button
+end
+
 local function section_new(tab: Tab, props: SectionProps): Section
 	local title = props.Title
 	local order = props.Order :: number
@@ -3585,6 +3734,7 @@ local function section_new(tab: Tab, props: SectionProps): Section
 	active_window = window
 
 	local section = {
+		Button = button_new,
 		Toggle = toggle_new,
 		Divider = divider_new,
 		Slider = slider_new,
