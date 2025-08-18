@@ -2012,10 +2012,10 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 4),
-			PaddingLeft = UDim.new(0, 6),
-			PaddingRight = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 4),
+			PaddingBottom = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 8),
 		},
 
 		create "TextLabel" {
@@ -2389,10 +2389,10 @@ local function color_picker_new(section: Section, props: ColorPickerProps): Colo
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 4),
-			PaddingLeft = UDim.new(0, 6),
-			PaddingRight = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 4),
+			PaddingBottom = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 8),
 		},
 
 		create "UIListLayout" {
@@ -2792,10 +2792,10 @@ local function range_slider_new(section: Section, props: RangeSliderProps): Rang
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 4),
-			PaddingLeft = UDim.new(0, 6),
-			PaddingRight = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 4),
+			PaddingBottom = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 8),
 		},
 
 		create "UIListLayout" {
@@ -2981,10 +2981,10 @@ local function keybind_new(section: Section, props: KeybindProps): Keybind
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 4),
-			PaddingLeft = UDim.new(0, 6),
-			PaddingRight = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 4),
+			PaddingBottom = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 8),
 		},
 
 		create "Frame" {
@@ -3222,10 +3222,10 @@ local function slider_new(section: Section, props: SliderProps): Slider
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 4),
-			PaddingLeft = UDim.new(0, 6),
-			PaddingRight = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 4),
+			PaddingBottom = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 8),
 		},
 
 		create "Frame" {
@@ -3484,10 +3484,10 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 4),
-			PaddingLeft = UDim.new(0, 6),
-			PaddingRight = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 4),
+			PaddingBottom = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 8),
 		},
 
 		create "Frame" {
@@ -3668,10 +3668,10 @@ local function button_new(section: Section, props: ButtonProps): Button
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 4),
-			PaddingLeft = UDim.new(0, 6),
-			PaddingRight = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 4),
+			PaddingBottom = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 8),
 		},
 
 		create "UIListLayout" {
