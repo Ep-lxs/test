@@ -3642,8 +3642,6 @@ local function button_new(section: Section, props: ButtonProps): Button
 	end
 	button.Listen = button_listen
 
-	window:theme_changed(update_toggle_colors)
-
 	local instance = create "TextButton" {
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundColor3 = Color3.new(),
