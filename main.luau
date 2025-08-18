@@ -2012,10 +2012,10 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 8),
 			PaddingRight = UDim.new(0, 8),
-			PaddingTop = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 6),
 		},
 
 		create "TextLabel" {
@@ -2389,10 +2389,10 @@ local function color_picker_new(section: Section, props: ColorPickerProps): Colo
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 8),
 			PaddingRight = UDim.new(0, 8),
-			PaddingTop = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 6),
 		},
 
 		create "UIListLayout" {
@@ -2792,10 +2792,10 @@ local function range_slider_new(section: Section, props: RangeSliderProps): Rang
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 8),
 			PaddingRight = UDim.new(0, 8),
-			PaddingTop = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 6),
 		},
 
 		create "UIListLayout" {
@@ -2981,10 +2981,10 @@ local function keybind_new(section: Section, props: KeybindProps): Keybind
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 8),
 			PaddingRight = UDim.new(0, 8),
-			PaddingTop = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 6),
 		},
 
 		create "Frame" {
@@ -3222,10 +3222,10 @@ local function slider_new(section: Section, props: SliderProps): Slider
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 8),
 			PaddingRight = UDim.new(0, 8),
-			PaddingTop = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 6),
 		},
 
 		create "Frame" {
@@ -3484,10 +3484,10 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 8),
 			PaddingRight = UDim.new(0, 8),
-			PaddingTop = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 6),
 		},
 
 		create "Frame" {
@@ -3607,7 +3607,6 @@ local function button_new(section: Section, props: ButtonProps): Button
 
 	local title = props.Title
 	local callbacks: { (boolean) -> () } = if props.Callback then { props.Callback } else {}
-	local value = source(default_value)
 
 	local button = {
 		kind = "button" :: "button",
@@ -3645,8 +3644,6 @@ local function button_new(section: Section, props: ButtonProps): Button
 
 	window:theme_changed(update_toggle_colors)
 
-	value:listen(fire_listeners)
-
 	local instance = create "TextButton" {
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundColor3 = Color3.new(),
@@ -3668,10 +3665,42 @@ local function button_new(section: Section, props: ButtonProps): Button
 		},
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 8),
 			PaddingRight = UDim.new(0, 8),
-			PaddingTop = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 6),
+		},
+
+		create "Frame" {
+			Active = true,
+			AnchorPoint = Vector2.new(1, 0.5),
+			AutomaticSize = Enum.AutomaticSize.XY,
+			BackgroundTransparency = 1,
+			LayoutOrder = 1,
+			Position = UDim2.fromScale(1, 0.5),
+			Selectable = true,
+			Size = UDim2.fromOffset(0, 19),
+
+			create "TextLabel" {
+				Active = true,
+				AutomaticSize = Enum.AutomaticSize.X,
+				BackgroundTransparency = 1,
+				FontFace = fonts.builder_sans.regular,
+				Selectable = true,
+				Size = UDim2.fromScale(0, 0),
+				Text = title,
+				theme_tag = "Secondary",
+				TextColor3 = Color3.fromRGB(200, 200, 200),
+				TextTransparency = section.content_transparency,
+				TextSize = 12,
+				TextWrapped = true,
+				TextXAlignment = Enum.TextXAlignment.Right,
+			},
+			
+			create "UIListLayout" {
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				VerticalAlignment = Enum.VerticalAlignment.Center,
+			},
 		},
 
 		create "UIListLayout" {
@@ -4313,10 +4342,10 @@ local function window_new(self: Library, props: WindowProps): Window
 		theme_tag = "ContentContainer",
 
 		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 8),
 			PaddingRight = UDim.new(0, 8),
-			PaddingTop = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 6),
 		},
 	} :: Frame
 
