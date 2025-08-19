@@ -982,8 +982,8 @@ local DEFAULT_THEMES = {
 			BackgroundTransparency = 0.7,
 		},
 		ElementStroke = {
-			Color = Color3.new(1, 1, 1),
-			Transparency = 0.95,
+			Color = Color3.fromRGB(14, 14, 14),
+			Transparency = 0,
 		},
 		ElementCorner = {
 			CornerRadius = UDim.new(0, 6)
