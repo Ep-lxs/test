@@ -4123,7 +4123,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	}
 	local DEFAULT_SETTINGS: Settings = {
 		theme = "Dark",
-		-- config = "default",
+		config = "default",
 	}
 
 	local settings_dir = `{dir}/settings.json`
