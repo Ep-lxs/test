@@ -614,6 +614,7 @@ export type Window = {
 	Minimized: boolean,
 
 	Destroy: (self: Window) -> (),
+	OnClose: (self: Window) -> (),
 
 	SaveConfig: (self: Window, name: string?) -> (),
 	GetConfig: (self: Window) -> string,
@@ -644,7 +645,7 @@ export type Window = {
 	theme: Theme,
 	themes: { [Theme]: ThemeData },
 	theme_instances: { [ThemeTag]: { Instance } },
-	
+
 	notifications: { Notification },
 
 	cleanups: { () -> () },
@@ -935,7 +936,7 @@ local DEFAULT_THEMES = {
 		-- TEXT COLORS
 		Primary = {TextColor3 = Color3.fromRGB(235, 235, 235),},
 		Secondary = {TextColor3 = Color3.fromRGB(200, 200, 200),},
-		
+
 		-- the rest of the stuff.
 		WindowShadow = {
 			ImageColor3 = Color3.fromRGB(0, 0, 0),
@@ -949,7 +950,7 @@ local DEFAULT_THEMES = {
 		WindowCorner = {
 			CornerRadius = UDim.new(0, 12)
 		},
-		
+
 		Topbar = {
 			BackgroundColor3 = Color3.fromRGB(14, 14, 14),
 			BackgroundTransparency = 0.1,
@@ -960,7 +961,7 @@ local DEFAULT_THEMES = {
 		TopbarTitle = {
 			TextColor3 = Color3.fromRGB(235, 235, 235)
 		},
-		
+
 		Sidebar = {
 			BackgroundColor3 = Color3.fromRGB(14, 14, 14),
 			BackgroundTransparency = 0.1,
@@ -969,14 +970,14 @@ local DEFAULT_THEMES = {
 			BackgroundColor3 = Color3.fromRGB(14, 14, 14),
 			BackgroundTransparency = 0.1,
 		},  
-		
+
 		Box = {
 			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
 			BackgroundTransparency = 0.1,
 			TextColor3 = Color3.fromRGB(200, 200, 200),
 			TextTransparency = 0.1,
 		},
-		
+
 		Element = {
 			BackgroundColor3 = Color3.new(0, 0, 0),
 			BackgroundTransparency = 0.7,
@@ -988,7 +989,7 @@ local DEFAULT_THEMES = {
 		ElementCorner = {
 			CornerRadius = UDim.new(0, 6)
 		},
-		
+
 		DropdownChoice = {
 			SelectedBackgroundColor3 = Color3.fromRGB(50, 50, 50),
 			SelectedTextColor3 = Color3.fromRGB(235, 235, 235),
@@ -1000,7 +1001,7 @@ local DEFAULT_THEMES = {
 			DeselectedBackgroundTransparency = 1,
 			DeselectedTextTransparency = 0,
 		},
-				
+
 		SliderThumb = {
 			ImageColor3 = Color3.fromRGB(253, 158, 247),
 			ImageTransparency = 0.1,
@@ -1014,7 +1015,7 @@ local DEFAULT_THEMES = {
 			BackgroundColor3 = Color3.fromRGB(127, 79, 124),
 			BackgroundTransparency = 0.1,
 		},
-		
+
 		ToggleStroke = {
 			EnabledColor = Color3.fromRGB(253, 158, 247),
 			DisabledColor = Color3.fromRGB(235, 235, 235),
@@ -1024,7 +1025,7 @@ local DEFAULT_THEMES = {
 			EnabledColor = Color3.fromRGB(253, 158, 247),
 			DisabledColor = Color3.fromRGB(235, 235, 235),
 		},
-		
+
 		Divider = {
 			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
 			BackgroundTransparency = 0.1,
@@ -1033,16 +1034,16 @@ local DEFAULT_THEMES = {
 			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
 			BackgroundTransparency = 0.1,
 		},
-		
+
 		SectionCorner = {
 			CornerRadius = UDim2.new(0, 6)
 		},
-		
+
 		Tab = {
 			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
 			BackgroundTransparency = 0.7,
 		},
-		
+
 		TabIcon = {
 			ImageColor3 = Color3.fromRGB(235, 235, 235)
 		},
@@ -1052,7 +1053,7 @@ local DEFAULT_THEMES = {
 		TabAccent = {
 			BackgroundColor3 = Color3.fromRGB(253, 158, 247)
 		},
-		
+
 		Notification = {
 			BackgroundColor3 = Color3.fromRGB(14, 14, 14),
 			BackgroundTransparency = 0.1,
@@ -1066,7 +1067,7 @@ local DEFAULT_THEMES = {
 		-- TEXT COLORS
 		Primary = {TextColor3 = Color3.fromRGB(20, 20, 20),},
 		Secondary = {TextColor3 = Color3.fromRGB(80, 80, 80),},
-		
+
 		-- the rest of the stuff.
 		WindowShadow = {
 			ImageColor3 = Color3.fromRGB(0, 0, 0),
@@ -1080,7 +1081,7 @@ local DEFAULT_THEMES = {
 		WindowCorner = {
 			CornerRadius = UDim.new(0, 12)
 		},
-		
+
 		Topbar = {
 			BackgroundColor3 = Color3.fromRGB(245, 245, 245),
 			BackgroundTransparency = 0.1,
@@ -1091,7 +1092,7 @@ local DEFAULT_THEMES = {
 		TopbarTitle = {
 			TextColor3 = Color3.fromRGB(20, 20, 20)
 		},
-		
+
 		Sidebar = {
 			BackgroundColor3 = Color3.fromRGB(245, 245, 245),
 			BackgroundTransparency = 0.1,
@@ -1100,14 +1101,14 @@ local DEFAULT_THEMES = {
 			BackgroundColor3 = Color3.fromRGB(245, 245, 245),
 			BackgroundTransparency = 0.1,
 		},  
-		
+
 		Box = {
 			BackgroundColor3 = Color3.fromRGB(240, 240, 240),
 			BackgroundTransparency = 0,
 			TextColor3 = Color3.fromRGB(30, 30, 30),
 			TextTransparency = 0,
 		},
-		
+
 		Element = {
 			BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 			BackgroundTransparency = 0.1,
@@ -1119,19 +1120,19 @@ local DEFAULT_THEMES = {
 		ElementCorner = {
 			CornerRadius = UDim.new(0, 6)
 		},
-		
+
 		DropdownChoice = {
 			SelectedBackgroundColor3 = Color3.fromRGB(230, 230, 230),
 			SelectedTextColor3 = Color3.fromRGB(20, 20, 20),
 			SelectedBackgroundTransparency = 0,
 			SelectedTextTransparency = 0,
-	
+
 			DeselectedBackgroundColor3 = Color3.fromRGB(255, 255, 255),
 			DeselectedTextColor3 = Color3.fromRGB(80, 80, 80),
 			DeselectedBackgroundTransparency = 0,
 			DeselectedTextTransparency = 0,
 		},
-				
+
 		SliderThumb = {
 			ImageColor3 = Color3.fromRGB(253, 158, 247),
 			ImageTransparency = 0,
@@ -1145,7 +1146,7 @@ local DEFAULT_THEMES = {
 			BackgroundColor3 = Color3.fromRGB(180, 130, 175),
 			BackgroundTransparency = 0,
 		},
-		
+
 		ToggleStroke = {
 			EnabledColor = Color3.fromRGB(253, 158, 247),
 			DisabledColor = Color3.fromRGB(120, 120, 120),
@@ -1155,7 +1156,7 @@ local DEFAULT_THEMES = {
 			EnabledColor = Color3.fromRGB(253, 158, 247),
 			DisabledColor = Color3.fromRGB(200, 200, 200),
 		},
-		
+
 		Divider = {
 			BackgroundColor3 = Color3.fromRGB(220, 220, 220),
 			BackgroundTransparency = 0,
@@ -1164,16 +1165,16 @@ local DEFAULT_THEMES = {
 			BackgroundColor3 = Color3.fromRGB(220, 220, 220),
 			BackgroundTransparency = 0,
 		},
-		
+
 		SectionCorner = {
 			CornerRadius = UDim2.new(0, 6)
 		},
-		
+
 		Tab = {
 			BackgroundColor3 = Color3.fromRGB(240, 240, 240),
 			BackgroundTransparency = 0,
 		},
-		
+
 		TabIcon = {
 			ImageColor3 = Color3.fromRGB(20, 20, 20)
 		},
@@ -1183,7 +1184,7 @@ local DEFAULT_THEMES = {
 		TabAccent = {
 			BackgroundColor3 = Color3.fromRGB(253, 158, 247)
 		},
-		
+
 		Notification = {
 			BackgroundColor3 = Color3.fromRGB(250, 250, 250),
 			BackgroundTransparency = 0,
@@ -1192,7 +1193,7 @@ local DEFAULT_THEMES = {
 			CornerRadius = UDim.new(0, 8)
 		},
 	},
-	
+
 }
 
 registry = {
@@ -1500,7 +1501,7 @@ local function apply_theme_to_instance(window: Window, instance: Instance, theme
 	if not properties then
 		return
 	end
-	
+
 	for property, value in properties do
 		pcall(function()
 			(instance :: any)[property] = value
@@ -1625,7 +1626,7 @@ local function create(name: string): ({ [any]: any }) -> Instance
 	return function(properties)
 		local instance = Instance.new(name)
 		local theme_tag, themed_window
-		
+
 		for property, value in properties do
 			if property == "theme_tag" then
 				local window = active_window
@@ -1637,7 +1638,7 @@ local function create(name: string): ({ [any]: any }) -> Instance
 					else
 						table.insert(tagged, instance)
 					end
-					
+
 					themed_window = window
 					theme_tag = value
 				end
@@ -1676,12 +1677,12 @@ local function create(name: string): ({ [any]: any }) -> Instance
 				end
 			end
 		end
-		
+
 		-- apply theme tag
 		if themed_window and theme_tag then
 			apply_theme_to_instance(themed_window, instance, theme_tag)
 		end
-		
+
 		return instance
 	end
 end
@@ -1784,9 +1785,9 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 	local title_text_transparency = motion(1)
 	local content_text_transparency = motion(1)
 	local position = motion(UDim2.fromScale(1, 0))
-	
+
 	local closed = false
-	
+
 	local function close_springs()
 		bg_transparency:spring(1, springs.soft)
 		stroke_transparency:spring(1, springs.soft)
@@ -1794,13 +1795,13 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 		content_text_transparency:spring(1, springs.soft)
 		position:spring(UDim2.fromScale(1, 0), springs.fast_soft)
 	end
-	
+
 	local function update_springs()
 		if closed then
 			close_springs()
 			return
 		end
-		
+
 		bg_transparency:spring(get_themed_property(window, "Notification", "BackgroundTransparency"), springs.soft)
 		stroke_transparency:spring(get_themed_property(window, "ElementStroke", "Transparency"), springs.soft)
 		title_text_transparency:spring(get_themed_property(window, "Primary", "TextTransparency") or 0, springs.soft)
@@ -1956,14 +1957,14 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			local bg_transparency = motion(1)
 			local text_color = motion(Color3.new())
 			local text_transparency = motion(1)
-			
+
 			local font = source(fonts.builder_sans.regular)
-			
+
 			local function spring_motions()
 				local is_selected = value:get() == item
-				
+
 				font:set(if is_selected then fonts.builder_sans.medium else fonts.builder_sans.regular)
-				
+
 				if open:get() then
 					-- open
 					if is_selected then
@@ -3826,7 +3827,7 @@ local function button_new(section: Section, props: ButtonProps): Button
 				TextWrapped = false,
 				TextXAlignment = Enum.TextXAlignment.Right,
 			},
-			
+
 			create "UIListLayout" {
 				SortOrder = Enum.SortOrder.LayoutOrder,
 				VerticalAlignment = Enum.VerticalAlignment.Center,
@@ -4047,7 +4048,7 @@ local function tab_new(window: Window, props: TabProps): Tab
 
 	local bg_transparency = motion(1)
 	local selector_transparency = motion(1)
-	
+
 	local function update_springs()
 		if selected:get() then
 			content_visible:set(true)
@@ -4060,7 +4061,7 @@ local function tab_new(window: Window, props: TabProps): Tab
 			selector_transparency:spring(1, springs.soft)
 		end
 	end
-	
+
 	selected:listen(update_springs)
 	window:theme_changed(update_springs)
 
@@ -4216,6 +4217,10 @@ local function window_new(self: Library, props: WindowProps): Window
 		for _, cleanup in self.cleanups do
 			cleanup()
 		end
+		
+		if self.OnClose then
+			self.OnClose()
+		end
 
 		self.container:Destroy()
 		table.clear(self)
@@ -4237,7 +4242,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			if not isfile(imageDir) then
 				local httpRequest = http_request or request
 				local response = httpRequest { Url = image, Method = "GET" }
-				
+
 				if response and response.Body then 
 					writefile(imageDir, response.Body)
 				end 
@@ -4406,7 +4411,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	local cleanups: { () -> () } = {}
 	local window = {
 		Tab = tab_new,
-		
+
 		Notify = notification_new,
 		notifications = {},
 
@@ -4516,7 +4521,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			exit_dialogue_visible:set(false)
 		end
 	end)
-	
+
 	local function update_springs()
 		if exit_dialogue_visible:get() then
 			-- visible
@@ -4541,7 +4546,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			exit_stroke_transparency:spring(1, springs.soft)	
 		end
 	end
-	
+
 	exit_dialogue_visible:listen(update_springs);
 	(window :: Window):theme_changed(update_springs)
 
