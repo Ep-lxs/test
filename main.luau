@@ -4280,13 +4280,12 @@ local function window_new(self: Library, props: WindowProps): Window
 	end
 
 	local function window_get_config(self: Window): string
-		return encode_config(self.Flags)
 	end
 
 	local function window_save_config(self: Window, name: string?)
 		ensure_folder(dir)
 		ensure_folder(config_directory)
-		local content = window_get_config(self)
+		local content = encode_config(self.Flags)
 		local config_name = name or "default"
 		writefile(`{config_directory}/{config_name}.config`, content)
 	end
