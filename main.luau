@@ -1061,6 +1061,138 @@ local DEFAULT_THEMES = {
 			CornerRadius = UDim.new(0, 8)
 		},
 	},
+
+	Light = {
+		-- TEXT COLORS
+		Primary = {TextColor3 = Color3.fromRGB(20, 20, 20),},
+		Secondary = {TextColor3 = Color3.fromRGB(80, 80, 80),},
+		
+		-- the rest of the stuff.
+		WindowShadow = {
+			ImageColor3 = Color3.fromRGB(0, 0, 0),
+			ImageTransparency = 0.85,
+		},
+		WindowStroke = {
+			Color = Color3.fromRGB(0, 0, 0),
+			Thickness = 1.2,
+			Transparency = 0.8,
+		},
+		WindowCorner = {
+			CornerRadius = UDim.new(0, 12)
+		},
+		
+		Topbar = {
+			BackgroundColor3 = Color3.fromRGB(245, 245, 245),
+			BackgroundTransparency = 0.1,
+		},
+		TopbarIcon = {
+			ImageColor3 = Color3.fromRGB(20, 20, 20)
+		},
+		TopbarTitle = {
+			TextColor3 = Color3.fromRGB(20, 20, 20)
+		},
+		
+		Sidebar = {
+			BackgroundColor3 = Color3.fromRGB(245, 245, 245),
+			BackgroundTransparency = 0.1,
+		},
+		ContentContainer = {
+			BackgroundColor3 = Color3.fromRGB(245, 245, 245),
+			BackgroundTransparency = 0.1,
+		},  
+		
+		Box = {
+			BackgroundColor3 = Color3.fromRGB(240, 240, 240),
+			BackgroundTransparency = 0,
+			TextColor3 = Color3.fromRGB(30, 30, 30),
+			TextTransparency = 0,
+		},
+		
+		Element = {
+			BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+			BackgroundTransparency = 0.1,
+		},
+		ElementStroke = {
+			Color = Color3.fromRGB(200, 200, 200),
+			Transparency = 0,
+		},
+		ElementCorner = {
+			CornerRadius = UDim.new(0, 6)
+		},
+		
+		DropdownChoice = {
+			SelectedBackgroundColor3 = Color3.fromRGB(230, 230, 230),
+			SelectedTextColor3 = Color3.fromRGB(20, 20, 20),
+			SelectedBackgroundTransparency = 0,
+			SelectedTextTransparency = 0,
+	
+			DeselectedBackgroundColor3 = Color3.fromRGB(255, 255, 255),
+			DeselectedTextColor3 = Color3.fromRGB(80, 80, 80),
+			DeselectedBackgroundTransparency = 0,
+			DeselectedTextTransparency = 0,
+		},
+				
+		SliderThumb = {
+			ImageColor3 = Color3.fromRGB(253, 158, 247),
+			ImageTransparency = 0,
+			BackgroundTransparency = 1,
+		},
+		SliderBar = {
+			BackgroundColor3 = Color3.fromRGB(230, 230, 230),
+			BackgroundTransparency = 0,
+		},
+		SliderBarFill = {
+			BackgroundColor3 = Color3.fromRGB(180, 130, 175),
+			BackgroundTransparency = 0,
+		},
+		
+		ToggleStroke = {
+			EnabledColor = Color3.fromRGB(253, 158, 247),
+			DisabledColor = Color3.fromRGB(120, 120, 120),
+			Transparency = 0.25,
+		},
+		ToggleThumb = {
+			EnabledColor = Color3.fromRGB(253, 158, 247),
+			DisabledColor = Color3.fromRGB(200, 200, 200),
+		},
+		
+		Divider = {
+			BackgroundColor3 = Color3.fromRGB(220, 220, 220),
+			BackgroundTransparency = 0,
+		},
+		TopbarLine = {
+			BackgroundColor3 = Color3.fromRGB(220, 220, 220),
+			BackgroundTransparency = 0,
+		},
+		
+		SectionCorner = {
+			CornerRadius = UDim2.new(0, 6)
+		},
+		
+		Tab = {
+			BackgroundColor3 = Color3.fromRGB(240, 240, 240),
+			BackgroundTransparency = 0,
+		},
+		
+		TabIcon = {
+			ImageColor3 = Color3.fromRGB(20, 20, 20)
+		},
+		TabCorner = {
+			CornerRadius = UDim2.new(0,6)
+		},
+		TabAccent = {
+			BackgroundColor3 = Color3.fromRGB(253, 158, 247)
+		},
+		
+		Notification = {
+			BackgroundColor3 = Color3.fromRGB(250, 250, 250),
+			BackgroundTransparency = 0,
+		},
+		NotificationCorner = {
+			CornerRadius = UDim.new(0, 8)
+		},
+	},
+	
 }
 
 registry = {
