@@ -4280,6 +4280,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	end
 
 	local function window_get_config(self: Window): string
+		
 	end
 
 	local function window_save_config(self: Window, name: string?)
