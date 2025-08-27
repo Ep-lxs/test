@@ -1129,7 +1129,7 @@ local DEFAULT_THEMES = {
 
 			DeselectedBackgroundColor3 = Color3.fromRGB(255, 255, 255),
 			DeselectedTextColor3 = Color3.fromRGB(80, 80, 80),
-			DeselectedBackgroundTransparency = 0,
+			DeselectedBackgroundTransparency = 1,
 			DeselectedTextTransparency = 0,
 		},
 
@@ -4056,7 +4056,6 @@ local function tab_new(window: Window, props: TabProps): Tab
 			selector_transparency:spring(get_themed_property(window, "TabAccent", "BackgroundTransparency") or 0, springs.soft)
 		else
 			local bg_tr = get_themed_property(window, "Tab", "DeselectedBackgroundTransparency") or 1
-			bg_transparency:set(1)
 			bg_transparency:spring(bg_tr, springs.soft)
 			selector_transparency:spring(1, springs.soft)
 		end
