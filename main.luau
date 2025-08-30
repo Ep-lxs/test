@@ -3919,16 +3919,19 @@ local function tab_new(window: Window, props: TabProps): Tab
 
 	local bg_transparency = motion(1)
 	local selector_transparency = motion(1)
+	local stroke_transparency = motion(1)
 
 	local function update_springs()
 		if selected:get() then
 			content_visible:set(true)
 			bg_transparency:spring(get_themed_property(window, "Tab", "BackgroundTransparency"), springs.soft)
 			selector_transparency:spring(get_themed_property(window, "TabAccent", "BackgroundTransparency") or 0, springs.soft)
+			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency"), springs.soft)
 		else
 			local bg_tr = get_themed_property(window, "Tab", "DeselectedBackgroundTransparency") or 1
 			bg_transparency:spring(bg_tr, springs.soft)
 			selector_transparency:spring(1, springs.soft)
+			stroke_transparency:spring(1, springs.soft)
 		end
 	end
 
@@ -3963,14 +3966,10 @@ local function tab_new(window: Window, props: TabProps): Tab
 			theme_tag = "TabCorner",
 		},
 
-		create "Frame" {
-			BackgroundColor3 = Color3.fromRGB(253, 158, 247),
-			BackgroundTransparency = selector_transparency,
-			AnchorPoint = Vector2.new(0, 0.5),
-			Position = UDim2.fromScale(0, 0.5),
-			Size = UDim2.new(0, 2, 1, 0),
-			BorderSizePixel = 0,
-			theme_tag = "TabAccent",
+		create "UIStroke" {
+			Color = Color3.new(15, 16, 17),
+			Transparency = stroke_transparency,
+			theme_tag = "TabStroke",
 		},
 
 		create "TextLabel" {
