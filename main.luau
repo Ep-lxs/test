@@ -973,13 +973,13 @@ local DEFAULT_THEMES = {
 
 		Box = {
 			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
-			BackgroundTransparency = 0.1,
+			BackgroundTransparency = 0,
 			TextColor3 = Color3.fromRGB(200, 200, 200),
 			TextTransparency = 0.1,
 		},
 
 		Element = {
-			BackgroundColor3 = Color3.new(13, 14, 15),
+			BackgroundColor3 = Color3.fromRGB(13, 14, 15),
 			BackgroundTransparency = 0,
 		},
 		ElementStroke = {
@@ -993,7 +993,7 @@ local DEFAULT_THEMES = {
 		DropdownChoice = {
 			SelectedBackgroundColor3 = Color3.fromRGB(50, 50, 50),
 			SelectedTextColor3 = Color3.fromRGB(235, 235, 235),
-			SelectedBackgroundTransparency = 0.1,
+			SelectedBackgroundTransparency = 0,
 			SelectedTextTransparency = 0,
 
 			DeselectedBackgroundColor3 = Color3.fromRGB(50, 50, 50),
@@ -1004,16 +1004,16 @@ local DEFAULT_THEMES = {
 
 		SliderThumb = {
 			ImageColor3 = Color3.fromRGB(253, 158, 247),
-			ImageTransparency = 0.1,
+			ImageTransparency = 0,
 			BackgroundTransparency = 1,
 		},
 		SliderBar = {
-			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
-			BackgroundTransparency = 0.1,
+			BackgroundColor3 = Color3.fromRGB(38, 39, 40),
+			BackgroundTransparency = 0,
 		},
 		SliderBarFill = {
 			BackgroundColor3 = Color3.fromRGB(127, 79, 124),
-			BackgroundTransparency = 0.1,
+			BackgroundTransparency = 0,
 		},
 
 		ToggleStroke = {
@@ -1027,12 +1027,12 @@ local DEFAULT_THEMES = {
 		},
 
 		Divider = {
-			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
-			BackgroundTransparency = 0.1,
+			BackgroundColor3 = Color3.fromRGB(38, 39, 40),
+			BackgroundTransparency = 0,
 		},
 		TopbarLine = {
-			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
-			BackgroundTransparency = 0.1,
+			BackgroundColor3 = Color3.fromRGB(38, 39, 40),
+			BackgroundTransparency = 0,
 		},
 
 		SectionCorner = {
