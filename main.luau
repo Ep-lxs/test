@@ -952,8 +952,8 @@ local DEFAULT_THEMES = {
 		},
 
 		Topbar = {
-			BackgroundColor3 = Color3.fromRGB(14, 14, 14),
-			BackgroundTransparency = 0.1,
+			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
+			BackgroundTransparency = 0,
 		},
 		TopbarIcon = {
 			ImageColor3 = Color3.fromRGB(235, 235, 235)
@@ -963,12 +963,12 @@ local DEFAULT_THEMES = {
 		},
 
 		Sidebar = {
-			BackgroundColor3 = Color3.fromRGB(14, 14, 14),
-			BackgroundTransparency = 0.1,
+			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
+			BackgroundTransparency = 0,
 		},
 		ContentContainer = {
-			BackgroundColor3 = Color3.fromRGB(14, 14, 14),
-			BackgroundTransparency = 0.1,
+			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
+			BackgroundTransparency = 0,
 		},  
 
 		Box = {
@@ -979,11 +979,11 @@ local DEFAULT_THEMES = {
 		},
 
 		Element = {
-			BackgroundColor3 = Color3.new(0, 0, 0),
-			BackgroundTransparency = 0.7,
+			BackgroundColor3 = Color3.new(13, 14, 15),
+			BackgroundTransparency = 0,
 		},
 		ElementStroke = {
-			Color = Color3.fromRGB(14, 14, 14),
+			Color = Color3.fromRGB(15, 16, 17),
 			Transparency = 0,
 		},
 		ElementCorner = {
@@ -1040,153 +1040,24 @@ local DEFAULT_THEMES = {
 		},
 
 		Tab = {
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			BackgroundTransparency = 0.7,
+			BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+			BackgroundTransparency = 0,
 		},
-
+		TabStroke = {
+			Color = Color3.fromRGB(15, 16, 17),
+		},
 		TabIcon = {
-			ImageColor3 = Color3.fromRGB(235, 235, 235)
+			ImageColor3 = Color3.fromRGB(253, 158, 247)
+		},
+		TabLabel = {
+			TextColor3 = Color3.fromRGB(253, 158, 247)
 		},
 		TabCorner = {
 			CornerRadius = UDim2.new(0,6)
 		},
-		TabAccent = {
-			BackgroundColor3 = Color3.fromRGB(253, 158, 247)
-		},
 
 		Notification = {
-			BackgroundColor3 = Color3.fromRGB(14, 14, 14),
-			BackgroundTransparency = 0.1,
-		},
-		NotificationCorner = {
-			CornerRadius = UDim.new(0, 8)
-		},
-	},
-
-	Light = {
-		-- TEXT COLORS
-		Primary = {TextColor3 = Color3.fromRGB(20, 20, 20),},
-		Secondary = {TextColor3 = Color3.fromRGB(80, 80, 80),},
-
-		-- the rest of the stuff.
-		WindowShadow = {
-			ImageColor3 = Color3.fromRGB(0, 0, 0),
-			ImageTransparency = 0.85,
-		},
-		WindowStroke = {
-			Color = Color3.fromRGB(0, 0, 0),
-			Thickness = 1.2,
-			Transparency = 0.8,
-		},
-		WindowCorner = {
-			CornerRadius = UDim.new(0, 12)
-		},
-
-		Topbar = {
-			BackgroundColor3 = Color3.fromRGB(245, 245, 245),
-			BackgroundTransparency = 0.1,
-		},
-		TopbarIcon = {
-			ImageColor3 = Color3.fromRGB(20, 20, 20)
-		},
-		TopbarTitle = {
-			TextColor3 = Color3.fromRGB(20, 20, 20)
-		},
-
-		Sidebar = {
-			BackgroundColor3 = Color3.fromRGB(245, 245, 245),
-			BackgroundTransparency = 0.1,
-		},
-		ContentContainer = {
-			BackgroundColor3 = Color3.fromRGB(245, 245, 245),
-			BackgroundTransparency = 0.1,
-		},  
-
-		Box = {
-			BackgroundColor3 = Color3.fromRGB(240, 240, 240),
-			BackgroundTransparency = 0,
-			TextColor3 = Color3.fromRGB(30, 30, 30),
-			TextTransparency = 0,
-		},
-
-		Element = {
-			BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-			BackgroundTransparency = 0.1,
-		},
-		ElementStroke = {
-			Color = Color3.fromRGB(200, 200, 200),
-			Transparency = 0,
-		},
-		ElementCorner = {
-			CornerRadius = UDim.new(0, 6)
-		},
-
-		DropdownChoice = {
-			SelectedBackgroundColor3 = Color3.fromRGB(230, 230, 230),
-			SelectedTextColor3 = Color3.fromRGB(20, 20, 20),
-			SelectedBackgroundTransparency = 0,
-			SelectedTextTransparency = 0,
-
-			DeselectedBackgroundColor3 = Color3.fromRGB(255, 255, 255),
-			DeselectedTextColor3 = Color3.fromRGB(80, 80, 80),
-			DeselectedBackgroundTransparency = 1,
-			DeselectedTextTransparency = 0,
-		},
-
-		SliderThumb = {
-			ImageColor3 = Color3.fromRGB(253, 158, 247),
-			ImageTransparency = 0,
-			BackgroundTransparency = 1,
-		},
-		SliderBar = {
-			BackgroundColor3 = Color3.fromRGB(230, 230, 230),
-			BackgroundTransparency = 0,
-		},
-		SliderBarFill = {
-			BackgroundColor3 = Color3.fromRGB(180, 130, 175),
-			BackgroundTransparency = 0,
-		},
-
-		ToggleStroke = {
-			EnabledColor = Color3.fromRGB(253, 158, 247),
-			DisabledColor = Color3.fromRGB(120, 120, 120),
-			Transparency = 0.25,
-		},
-		ToggleThumb = {
-			EnabledColor = Color3.fromRGB(253, 158, 247),
-			DisabledColor = Color3.fromRGB(200, 200, 200),
-		},
-
-		Divider = {
-			BackgroundColor3 = Color3.fromRGB(220, 220, 220),
-			BackgroundTransparency = 0,
-		},
-		TopbarLine = {
-			BackgroundColor3 = Color3.fromRGB(220, 220, 220),
-			BackgroundTransparency = 0,
-		},
-
-		SectionCorner = {
-			CornerRadius = UDim2.new(0, 6)
-		},
-
-		Tab = {
-			BackgroundColor3 = Color3.fromRGB(240, 240, 240),
-			BackgroundTransparency = 0,
-		},
-
-		TabIcon = {
-			ImageColor3 = Color3.fromRGB(20, 20, 20)
-		},
-		TabCorner = {
-			CornerRadius = UDim2.new(0,6)
-		},
-		TabAccent = {
-			BackgroundColor3 = Color3.fromRGB(253, 158, 247)
-		},
-
-		Notification = {
-			BackgroundColor3 = Color3.fromRGB(250, 250, 250),
+			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
 			BackgroundTransparency = 0,
 		},
 		NotificationCorner = {
@@ -1841,7 +1712,7 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 	local notification
 	local instance = create "Frame" {
 		AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundColor3 = Color3.fromRGB(14, 14, 14),
+		BackgroundColor3 = Color3.fromRGB(9, 10, 11),
 		BackgroundTransparency = bg_transparency,
 		Size = UDim2.fromScale(1, 0),
 		Position = position,
@@ -1900,7 +1771,7 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 		},
 
 		create "UIStroke" {
-			Color = Color3.new(1, 1, 1),
+			Color = Color3.new(15, 16, 17),
 			Transparency = stroke_transparency,
 			theme_tag = "ElementStroke",
 		},
@@ -2221,7 +2092,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		-- AnchorPoint = Vector2.new(1, 0.5),
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		-- AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundColor3 = Color3.fromRGB(14, 14, 14),
+		BackgroundColor3 = Color3.fromRGB(9, 10, 11),
 		BackgroundTransparency = dropdown_transparency,
 		BorderColor3 = Color3.new(),
 		BorderSizePixel = 0,
@@ -4195,7 +4066,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 	end
 
-	local function window_maximize(self: Window)
+	local function window_maximize(self: Window)	
 		if not self.Minimized then
 			return
 		end
@@ -4466,8 +4337,8 @@ local function window_new(self: Library, props: WindowProps): Window
 
 	local content_container = create "Frame" {
 		AnchorPoint = Vector2.new(1, 0),
-		BackgroundColor3 = Color3.fromRGB(14, 14, 14),
-		BackgroundTransparency = 0.1,
+		BackgroundColor3 = Color3.fromRGB(9, 10, 11),
+		BackgroundTransparency = 0,
 		BorderColor3 = Color3.new(),
 		BorderSizePixel = 0,
 		LayoutOrder = 1,
@@ -4484,8 +4355,8 @@ local function window_new(self: Library, props: WindowProps): Window
 	} :: Frame
 
 	local sidebar = create "Frame" {
-		BackgroundColor3 = Color3.fromRGB(14, 14, 14),
-		BackgroundTransparency = 0.1,
+		BackgroundColor3 = Color3.fromRGB(9, 10, 11),
+		BackgroundTransparency = 0,
 		BorderColor3 = Color3.new(),
 		BorderSizePixel = 0,
 		Size = UDim2.new(0, 150, 1, 0),
@@ -4566,7 +4437,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		create "Frame" {
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			AutomaticSize = Enum.AutomaticSize.Y,
-			BackgroundColor3 = Color3.fromRGB(14, 14, 14),
+			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
 			BackgroundTransparency = notification_transparency,
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.fromOffset(220, 0),
@@ -4762,8 +4633,8 @@ local function window_new(self: Library, props: WindowProps): Window
 
 			-- topbar
 			create "Frame" {
-				BackgroundColor3 = Color3.fromRGB(14, 14, 14),
-				BackgroundTransparency = 0.1,
+				BackgroundColor3 = Color3.fromRGB(9, 10, 11),
+				BackgroundTransparency = 0,
 				BorderColor3 = Color3.new(),
 				BorderSizePixel = 0,
 				Size = UDim2.new(1, 0, 0, 34),
@@ -4787,7 +4658,7 @@ local function window_new(self: Library, props: WindowProps): Window
 					BackgroundTransparency = 1,
 					FontFace = fonts.builder_sans.bold,
 					Position = UDim2.new(0, 34, 0.5, 0),
-					Size = UDim2.fromOffset(0, 16),
+					Size = UDim2.fromOffset(0, 15),
 					Text = title,
 					TextColor3 = Color3.fromRGB(235, 235, 235),
 					TextScaled = true,
