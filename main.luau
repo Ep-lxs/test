@@ -3821,7 +3821,7 @@ local function section_new(tab: Tab, props: SectionProps): Section
 	local container = create "Frame" {
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
-		Position = UDim2.fromOffset(0, 19),
+		Position = UDim2.fromOffset(0, 20),
 		Size = UDim2.fromScale(1, 0),
 		-- Visible = container_visible,
 
@@ -3849,14 +3849,13 @@ local function section_new(tab: Tab, props: SectionProps): Section
 			create "Frame" {
 				BackgroundTransparency = 1,
 				LayoutOrder = -1,
-				Size = UDim2.new(1, 0, 0, 15),
+				Size = UDim2.new(1, 0, 0, 14),
 
 				create "TextLabel" {
-					AutomaticSize = Enum.AutomaticSize.X,
 					BackgroundTransparency = 1,
-					FontFace = fonts.builder_sans.semibold,
+					FontFace = fonts.builder_sans.medium,
 					LayoutOrder = 1,
-					Size = UDim2.fromOffset(0, 15),
+					Size = UDim2.fromScale(1, 1),
 					Text = title,
 					TextTransparency = content_transparency,
 					TextColor3 = Color3.fromRGB(235, 235, 235),
