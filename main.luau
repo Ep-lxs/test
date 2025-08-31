@@ -3919,7 +3919,6 @@ local function tab_new(window: Window, props: TabProps): Tab
 	local content_visible = source(selected:get())
 
 	local bg_transparency = motion(1)
-	local selector_transparency = motion(1)
 	local stroke_transparency = motion(1)
 	local label_color = motion(get_themed_property(window, "TabLabel", "DeselectedTextColor3"))
 	local image_color = motion(get_themed_property(window, "TabIcon", "DeselectedImageColor3"))
@@ -3928,7 +3927,6 @@ local function tab_new(window: Window, props: TabProps): Tab
 		if selected:get() then
 			content_visible:set(true)
 			bg_transparency:spring(get_themed_property(window, "Tab", "BackgroundTransparency"), springs.soft)
-			selector_transparency:spring(get_themed_property(window, "TabAccent", "BackgroundTransparency") or 0, springs.soft)
 			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency"), springs.soft)
 			
 			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor3"), springs.soft)
@@ -3936,7 +3934,6 @@ local function tab_new(window: Window, props: TabProps): Tab
 		else
 			local bg_tr = get_themed_property(window, "Tab", "DeselectedBackgroundTransparency") or 1
 			bg_transparency:spring(bg_tr, springs.soft)
-			selector_transparency:spring(1, springs.soft)
 			stroke_transparency:spring(1, springs.soft)
 			
 			image_color:spring(get_themed_property(window, "TabIcon", "DeselectedImageColor3"), springs.soft)
