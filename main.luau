@@ -1050,7 +1050,8 @@ local DEFAULT_THEMES = {
 			ImageColor3 = Color3.fromRGB(253, 158, 247)
 		},
 		TabLabel = {
-			TextColor3 = Color3.fromRGB(253, 158, 247)
+			SelectedTextColor3 = Color3.fromRGB(253, 158, 247),
+			DeselectedTextColor3 = Color3.fromRGB(200, 200, 200),
 		},
 		TabCorner = {
 			CornerRadius = UDim2.new(0,6)
@@ -3919,6 +3920,8 @@ local function tab_new(window: Window, props: TabProps): Tab
 	local bg_transparency = motion(1)
 	local selector_transparency = motion(1)
 	local stroke_transparency = motion(1)
+	local label_color = get_themed_property(window, "TabLabel", "DeselectedTextColor3")
+	local image_color = get_themed_property(window, "TabIcon", "DeselectedImageColor")
 
 	local function update_springs()
 		if selected:get() then
@@ -3926,11 +3929,15 @@ local function tab_new(window: Window, props: TabProps): Tab
 			bg_transparency:spring(get_themed_property(window, "Tab", "BackgroundTransparency"), springs.soft)
 			selector_transparency:spring(get_themed_property(window, "TabAccent", "BackgroundTransparency") or 0, springs.soft)
 			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency"), springs.soft)
+			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor"), springs.soft)
+			label_color:spring(get_themed_property(window, "TabIcon", "SelectedTextColor3"), springs.soft)
 		else
 			local bg_tr = get_themed_property(window, "Tab", "DeselectedBackgroundTransparency") or 1
 			bg_transparency:spring(bg_tr, springs.soft)
 			selector_transparency:spring(1, springs.soft)
 			stroke_transparency:spring(1, springs.soft)
+			image_color:spring(get_themed_property(window, "TabIcon", "DeselectedImageColor"), springs.soft)
+			label_color:spring(get_themed_property(window, "TabIcon", "DeselectedTextColor3"), springs.soft)
 		end
 	end
 
@@ -3974,23 +3981,23 @@ local function tab_new(window: Window, props: TabProps): Tab
 		create "TextLabel" {
 			AnchorPoint = Vector2.new(0, 0.5),
 			BackgroundTransparency = 1,
-			FontFace = fonts.builder_sans.medium,
+			FontFace = fonts.builder_sans.semibold,
 			LayoutOrder = 1,
 			Position = UDim2.new(0, 27, 0.5, 0),
 			Size = UDim2.new(1, 0, 0, 14),
 			Text = title,
-			TextColor3 = Color3.fromRGB(235, 235, 235),
+			TextColor3 = label_color,
 			TextSize = 14,
 			TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Left,
-			theme_tag = "Primary",
+			theme_tag = "TabLabel",
 		},
 
 		create "ImageLabel" {
 			AnchorPoint = Vector2.new(0, 0.5),
 			BackgroundTransparency = 1,
 			Image = ENSURE_IMAGE(icon),
-			ImageColor3 = Color3.fromRGB(235, 235, 235),
+			ImageColor3 = image_color,
 			Position = UDim2.new(0, 8, 0.5, 0),
 			ScaleType = Enum.ScaleType.Fit,
 			Size = UDim2.fromOffset(15, 15),
