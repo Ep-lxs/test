@@ -3930,14 +3930,14 @@ local function tab_new(window: Window, props: TabProps): Tab
 			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency"), springs.soft)
 			
 			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor3"), springs.soft)
-			label_color:spring(get_themed_property(window, "TabIcon", "SelectedTextColor3"), springs.soft)
+			label_color:spring(get_themed_property(window, "TabLabel", "SelectedTextColor3"), springs.soft)
 		else
 			local bg_tr = get_themed_property(window, "Tab", "DeselectedBackgroundTransparency") or 1
 			bg_transparency:spring(bg_tr, springs.soft)
 			stroke_transparency:spring(1, springs.soft)
 			
 			image_color:spring(get_themed_property(window, "TabIcon", "DeselectedImageColor3"), springs.soft)
-			label_color:spring(get_themed_property(window, "TabIcon", "DeselectedTextColor3"), springs.soft)
+			label_color:spring(get_themed_property(window, "TabLabel", "DeselectedTextColor3"), springs.soft)
 		end
 	end
 
