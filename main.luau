@@ -1047,7 +1047,8 @@ local DEFAULT_THEMES = {
 			Color = Color3.fromRGB(15, 16, 17),
 		},
 		TabIcon = {
-			ImageColor3 = Color3.fromRGB(253, 158, 247)
+			SelectedImageColor3 = Color3.fromRGB(253, 158, 247),
+			DeselectedImageColor3 = Color3.fromRGB(200, 200, 200),
 		},
 		TabLabel = {
 			SelectedTextColor3 = Color3.fromRGB(253, 158, 247),
@@ -3921,7 +3922,7 @@ local function tab_new(window: Window, props: TabProps): Tab
 	local selector_transparency = motion(1)
 	local stroke_transparency = motion(1)
 	local label_color = get_themed_property(window, "TabLabel", "DeselectedTextColor3")
-	local image_color = get_themed_property(window, "TabIcon", "DeselectedImageColor")
+	local image_color = get_themed_property(window, "TabIcon", "DeselectedImageColor3")
 
 	local function update_springs()
 		if selected:get() then
@@ -3929,14 +3930,14 @@ local function tab_new(window: Window, props: TabProps): Tab
 			bg_transparency:spring(get_themed_property(window, "Tab", "BackgroundTransparency"), springs.soft)
 			selector_transparency:spring(get_themed_property(window, "TabAccent", "BackgroundTransparency") or 0, springs.soft)
 			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency"), springs.soft)
-			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor"), springs.soft)
+			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor3"), springs.soft)
 			label_color:spring(get_themed_property(window, "TabIcon", "SelectedTextColor3"), springs.soft)
 		else
 			local bg_tr = get_themed_property(window, "Tab", "DeselectedBackgroundTransparency") or 1
 			bg_transparency:spring(bg_tr, springs.soft)
 			selector_transparency:spring(1, springs.soft)
 			stroke_transparency:spring(1, springs.soft)
-			image_color:spring(get_themed_property(window, "TabIcon", "DeselectedImageColor"), springs.soft)
+			image_color:spring(get_themed_property(window, "TabIcon", "DeselectedImageColor3"), springs.soft)
 			label_color:spring(get_themed_property(window, "TabIcon", "DeselectedTextColor3"), springs.soft)
 		end
 	end
