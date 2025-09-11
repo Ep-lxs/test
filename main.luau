@@ -582,7 +582,7 @@ type Property = string
 type ThemeData = { [ThemeTag]: { [Property]: any } }
 
 export type Registry = {
-	motions: { Motion },
+	motions: { Motion<any> },
 	motion_connection: RBXScriptConnection,
 	windows: { Window },
 }
@@ -682,6 +682,7 @@ export type TabProps = {
 }
 
 export type Section = {
+	Input: (self: Section, props: InputProps) -> Input,
 	Button: (self: Section, props: ButtonProps) -> Button,
 	Toggle: (self: Section, props: ToggleProps) -> Toggle,
 	Divider: (self: Section, props: DividerProps) -> Divider,
@@ -731,6 +732,22 @@ export type Button = {
 	instance: TextButton,
 }
 
+export type Input = {
+	kind: "input",
+
+	Listen: (self: Input, callback: (string) -> ()) -> () -> (),
+	Value: Source<string>,
+
+	window: Window,
+	tab: Tab,
+	section: Section,
+
+	title: string,
+	callbacks: { (string) -> () },
+
+	instance: Frame,
+}
+
 export type Toggle = {
 	kind: "toggle",
 
@@ -761,6 +778,15 @@ export type ButtonProps = {
 	Title: string,
 	Callback: (() -> ())?,
 
+	Flag: string?,
+	Order: number?,
+}
+
+export type InputProps = {
+	Title: string,
+	DefaultValue: string,
+	Callback: ((Value: string) -> ())?,
+	
 	Flag: string?,
 	Order: number?,
 }
@@ -910,7 +936,7 @@ export type DropdownProps = {
 	Order: number?,
 }
 
-export type Element = Toggle | Divider | Slider | Keybind | RangeSlider | ColorPicker | Dropdown
+export type Element = Toggle | Divider | Slider | Keybind | RangeSlider | ColorPicker | Dropdown | Button | Input
 
 local DEFAULT_MINIMIZE_KEY = Enum.KeyCode.LeftAlt
 
@@ -989,6 +1015,11 @@ local DEFAULT_THEMES = {
 		ElementCorner = {
 			CornerRadius = UDim.new(0, 6)
 		},
+		
+		InputBox = {
+			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+			PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
+		},
 
 		DropdownChoice = {
 			SelectedBackgroundColor3 = Color3.fromRGB(50, 50, 50),
@@ -1062,6 +1093,10 @@ local DEFAULT_THEMES = {
 			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
 			BackgroundTransparency = 0,
 		},
+		NotificationStroke = {
+			Color = Color3.fromRGB(255, 255, 255),
+			Transparency = 0.95,
+		},
 		NotificationCorner = {
 			CornerRadius = UDim.new(0, 8)
 		},
@@ -1082,12 +1117,24 @@ local isfolder = isfolder :: (string) -> boolean
 local makefolder = makefolder :: (string) -> ()
 local writefile = writefile :: (string, string) -> ()
 local readfile = readfile :: (string) -> string?
-local isfile = isfile :: (string) -> string?
+local isfile = isfile :: (string) -> boolean
 
 if RunService:IsStudio() then
 	local WORKSPACE = Instance.new("Folder")
 	WORKSPACE.Name = "workspace"
 	WORKSPACE.Parent = workspace
+	
+	isfile = function(path: string): boolean
+		local split = string.split(path, "/")
+		local file = WORKSPACE :: Instance
+		for i = 1, #split do
+			if not file then
+				return false
+			end
+			file = (file :: any):FindFirstChild(split[i])
+		end
+		return file ~= nil and file:IsA("StringValue")
+	end
 
 	makefolder = function(path: string)
 		local fldr = Instance.new("Folder")
@@ -1292,6 +1339,7 @@ do
 			end,
 			write = function(buf, cursor, value)
 				local len = #value
+				realloc(len + 2)
 				buffer.writeu16(buf, cursor, len)
 				buffer.writestring(buf, cursor + 2, value)
 				return len + 2
@@ -1676,7 +1724,7 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 		end
 
 		bg_transparency:spring(get_themed_property(window, "Notification", "BackgroundTransparency"), springs.soft)
-		stroke_transparency:spring(get_themed_property(window, "ElementStroke", "Transparency"), springs.soft)
+		stroke_transparency:spring(get_themed_property(window, "NotificationStroke", "Transparency"), springs.soft)
 		title_text_transparency:spring(get_themed_property(window, "Primary", "TextTransparency") or 0, springs.soft)
 		content_text_transparency:spring(get_themed_property(window, "Secondary", "TextTransparency") or 0, springs.soft)
 		position:spring(UDim2.fromOffset(0, 0), springs.fast_soft)
@@ -1773,9 +1821,9 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 		},
 
 		create "UIStroke" {
-			Color = Color3.new(15, 16, 17),
+			Color = Color3.new(255, 255, 255),
 			Transparency = stroke_transparency,
-			theme_tag = "ElementStroke",
+			theme_tag = "NotificationStroke",
 		},
 	} :: Frame
 
@@ -1823,8 +1871,14 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 	local items = props.Items
 
 	local open = source(false)
+	local search_text = source("")
 
 	local function dropdown_set_items(self: Dropdown, items: { string })
+		local function match_search(item: string, search: string): boolean
+			local text = string.lower(search_text:get())
+			return text == "" or text == string.rep(" ", #text) or string.sub(item, 1, #text) == text
+		end
+		
 		local function button(item: string, order: number): TextButton
 			local bg_color = motion(Color3.new())
 			local bg_transparency = motion(1)
@@ -1838,7 +1892,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 
 				font:set(if is_selected then fonts.builder_sans.medium else fonts.builder_sans.regular)
 
-				if open:get() then
+				if visible then
 					-- open
 					if is_selected then
 						-- selected
@@ -1862,11 +1916,18 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 
 			local disconnect1 = value:listen(spring_motions)
 			local disconnect2 = open:listen(spring_motions)
+			
+			local item_visible = source(match_search(item, search_text:get()))
+			
+			local disconnect3 = search_text:listen(function(search)
+				item_visible:set(match_search(item, search))
+			end)
 			window:theme_changed(spring_motions)
 
 			table.insert(item_cleanups, function()
 				disconnect1()
 				disconnect2()
+				disconnect3()
 				bg_transparency:destroy()
 				bg_color:destroy()
 				text_transparency:destroy()
@@ -1890,6 +1951,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 				LayoutOrder = order,
 				TextTransparency = text_transparency,
 				theme_tag = "DropdownChoice",
+				Visible = item_visible,
 
 				Activated = function()
 					value:set(item)
@@ -2085,25 +2147,73 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		SortOrder = Enum.SortOrder.LayoutOrder,
 	} :: UIListLayout
 
-	local dropdown_size = motion(UDim2.fromOffset(100, 0))
+	local dropdown_size = motion(UDim2.fromScale(1, 0))
 	local dropdown_transparency = motion(1)
 	local dropdown_stroke_transparency = motion(1)
-
+	
 	dropdown_scroll = create "ScrollingFrame" {
 		Active = true,
-		-- AnchorPoint = Vector2.new(1, 0.5),
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
-		-- AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundColor3 = Color3.fromRGB(9, 10, 11),
-		BackgroundTransparency = dropdown_transparency,
-		BorderColor3 = Color3.new(),
-		BorderSizePixel = 0,
+		BackgroundTransparency = 1,
 		CanvasSize = UDim2.new(),
-		Position = UDim2.fromScale(0.838257, 0.430265),
+		Position = UDim2.fromOffset(0, 23),
 		ScrollBarThickness = 0,
 		ScrollingDirection = Enum.ScrollingDirection.Y,
 		Size = dropdown_size,
-		ZIndex = 100,
+
+		scroll_list_layout,
+
+		create "UIPadding" {
+			PaddingBottom = UDim.new(0, 4),
+			PaddingLeft = UDim.new(0, 1),
+			PaddingRight = UDim.new(0, 1),
+			PaddingTop = UDim.new(0, 4),
+		},
+	} :: ScrollingFrame
+
+	local search_box_transparency = motion(1)
+	local search_box = create "TextBox" {
+		Active = false,
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		FontFace = fonts.builder_sans.regular,
+		LayoutOrder = -1,
+		PlaceholderText = "Search",
+		Selectable = false,
+		Size = UDim2.new(1, 0, 0, 21),
+		Text = "",
+		TextColor3 = Color3.fromRGB(235, 235, 235),
+		TextSize = 13,
+		TextWrapped = true,
+		TextTransparency = search_box_transparency,
+		TextXAlignment = Enum.TextXAlignment.Left,
+
+		create "UICorner" {
+			CornerRadius = UDim.new(0, 4),
+		},
+
+		create "UIPadding" {
+			PaddingLeft = UDim.new(0, 6),
+			PaddingRight = UDim.new(0, 6),
+		},
+	} :: TextBox
+	
+	search_box:GetPropertyChangedSignal("Text"):Connect(function()
+		search_text:set(search_box.Text)
+	end)
+
+	local divider_transparency = motion(1)
+	local scroll_container = create "Frame" {
+		Active = true,
+		--AnchorPoint = Vector2.new(1, 0.5),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+		ClipsDescendants = true,
+		Position = UDim2.fromOffset(0, 0),
+		Selectable = true,
+		SelectionGroup = true,
+		BackgroundTransparency = dropdown_transparency,
+		Size = UDim2.fromOffset(110, 0),
 		theme_tag = "ContentContainer",
 
 		create "UICorner" {
@@ -2111,22 +2221,44 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			theme_tag = "ElementCorner",
 		},
 
-		create "UIPadding" {
-			PaddingBottom = UDim.new(0, 3),
-			PaddingLeft = UDim.new(0, 3),
-			PaddingRight = UDim.new(0, 3),
-			PaddingTop = UDim.new(0, 3),
-		},
-
-		scroll_list_layout,
-
 		create "UIStroke" {
-			Color = Color3.new(1, 1, 1),
+			Color = Color3.fromRGB(15, 16, 17),
 			Transparency = dropdown_stroke_transparency,
-			theme_tag = "ElementStroke"
+			theme_tag = "ElementStroke",
 		},
-	} :: ScrollingFrame
-	dropdown_scroll.Parent = ensure_gui()
+
+		search_box,
+
+		dropdown_scroll,
+
+
+		create "Frame" {
+			AnchorPoint = Vector2.new(0, 1),
+			BackgroundColor3 = Color3.fromRGB(38, 39, 40),
+			BorderSizePixel = 0,
+			BackgroundTransparency = divider_transparency,
+			Position = UDim2.fromOffset(0, 23),
+			Size = UDim2.new(1, 0, 0, 1),
+			theme_tag = "Divider",
+		},
+
+		create "UIPadding" {
+			PaddingBottom = UDim.new(0, 2),
+			PaddingLeft = UDim.new(0, 2),
+			PaddingRight = UDim.new(0, 2),
+			PaddingTop = UDim.new(0, 2),
+		},
+	} :: Frame
+	scroll_container.Parent = ensure_gui()
+	
+	local function update_divider()
+		if open:get() then
+			divider_transparency:spring(get_themed_property(window, "Divider", "BackgroundTransparency"), springs.fast_soft)
+		else
+			divider_transparency:spring(1, springs.fast_soft)
+		end
+	end
+	window:theme_changed(update_divider)
 
 	visible:listen(function(visible)
 		if not visible then
@@ -2140,60 +2272,80 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 
 	dropdown_set_items(dropdown, items)
 
-	local dropdown_target_size = UDim2.fromOffset(100, 0)
+	local dropdown_target_size = UDim2.fromScale(1, 0)
 
 	dropdown_size:onComplete(function(value)
 		if value.Y.Offset == 0 then
-			dropdown_scroll.Visible = false
+			scroll_container.Visible = false
 		end
 	end)
-
-	local function adjust_scroll_size()
-		dropdown_target_size = UDim2.fromOffset(
-			100,
+	
+	local function calculate_scroll_size()
+		dropdown_target_size = UDim2.new(
+			1,
+			0,
+			0,
 			math.min(
 				scroll_list_layout.AbsoluteContentSize.Y + 6,
 				((MAX_DROPDOWN_VISIBLE_ITEMS - 1) * 1 + MAX_DROPDOWN_VISIBLE_ITEMS * 21) + 6
 			)
 		)
+	end
+
+	local function adjust_scroll_size()
+		calculate_scroll_size()
 		if open:get() then
 			dropdown_size:spring(dropdown_target_size, springs.fast_soft)
 		end
 	end
-
+	
 	open:listen(function(open)
 		dropdown.IsOpen = open
 		if open then
-			dropdown_scroll.Visible = true
+			calculate_scroll_size()
+			scroll_container.Visible = true
 			dropdown_size:spring(dropdown_target_size, springs.fast_soft)
 			dropdown_transparency:spring(get_themed_property(window, "ContentContainer", "BackgroundTransparency"), springs.soft)
 			dropdown_stroke_transparency:spring(get_themed_property(window, "ElementStroke", "Transparency"), springs.soft)
+			search_box_transparency:spring(0, springs.fast_soft)	
+			divider_transparency:spring(get_themed_property(window, "Divider", "BackgroundTransparency"), springs.fast_soft)
 		else
-			dropdown_size:spring(UDim2.fromOffset(100, 0), springs.fast_soft)
+			-- if dropdown is closing, make sure they cant still add text to the search box
+			if search_box:IsFocused() then
+				search_box:ReleaseFocus()
+			end
+			
+			dropdown_size:spring(UDim2.fromScale(1, 0), springs.fast_soft)
 			dropdown_transparency:spring(1, springs.soft)
 			dropdown_stroke_transparency:spring(1, springs.soft)
+			search_box_transparency:spring(1, springs.fast_soft)
+			divider_transparency:spring(1, springs.fast_soft)
 		end
 	end)
 
 	adjust_scroll_size()
-	scroll_list_layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(adjust_scroll_size)
+	local con0 = scroll_list_layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(adjust_scroll_size)
 
 	local function update_scroll_position()
 		local button_position = button.AbsolutePosition
-		local position = UDim2.fromOffset(button_position.X, button_position.Y)
-		dropdown_scroll.Position = position
+		local position = UDim2.fromOffset(button_position.X, button_position.Y - 21)
+		scroll_container.Position = position
 	end
 
 	update_scroll_position()
-	button:GetPropertyChangedSignal("AbsolutePosition"):Connect(update_scroll_position)
-	button:GetPropertyChangedSignal("AbsoluteSize"):Connect(update_scroll_position)
+	local con1 = button:GetPropertyChangedSignal("AbsolutePosition"):Connect(update_scroll_position)
+	local con2 = button:GetPropertyChangedSignal("AbsoluteSize"):Connect(update_scroll_position)
 
 	table.insert(window.cleanups, function()
-		dropdown_scroll:Destroy()
+		scroll_container:Destroy()
+		con0:Disconnect()
+		con1:Disconnect()
+		con2:Disconnect()
 	end)
+	
 	active_window = nil
-
-	ELEMENT_FLAG(dropdown, section, props)
+	ELEMENT_FLAG(dropdown, section, props) -- register flag
+	
 	return dropdown
 end
 
@@ -3415,13 +3567,13 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 
 		Value = value,
 	}
-
+	
 	local accent_toggle_thumb = motion(Color3.fromRGB(235, 235, 235))
 	local accent_toggle_stroke = motion(Color3.fromRGB(235, 235, 235))
 	local toggle_position = motion(UDim2.fromScale(0, 0.5))
 	local toggle_anchor_point = motion(Vector2.new(0, 0.5))
 	local stroke_transparency = motion(1)
-
+	
 	section.visible:listen(function(visible)
 		if visible then
 			local value = get_themed_property(window, "ToggleStroke", "Transparency") :: number
@@ -3430,7 +3582,7 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 			stroke_transparency:spring(1, springs.soft)
 		end
 	end)
-
+	
 	local function fire_listeners(value: boolean)
 		for _, callback in callbacks do
 			task.spawn(callback, value)
@@ -3612,7 +3764,7 @@ local function button_new(section: Section, props: ButtonProps): Button
 	active_window = window
 
 	local title = props.Title
-	local callbacks: { (boolean) -> () } = if props.Callback then { props.Callback } else {}
+	local callbacks: { () -> () } = if props.Callback then { props.Callback } else {}
 
 	local button = {
 		kind = "button" :: "button",
@@ -3638,7 +3790,7 @@ local function button_new(section: Section, props: ButtonProps): Button
 		end
 	end
 
-	local function button_listen(self: Button, callback: (boolean) -> ()): () -> ()
+	local function button_listen(self: Button, callback: () -> ()): () -> ()
 		local idx = #callbacks + 1
 		callbacks[idx] = callback
 		return function()
@@ -3755,6 +3907,163 @@ local function button_new(section: Section, props: ButtonProps): Button
 	return button
 end
 
+local function input_new(section: Section, props: InputProps): Input
+	local order = NEXT_ORDER(section, props)
+
+	local tab = section.tab
+	local window = tab.window
+	active_window = window
+
+	local title = props.Title
+	local default_value = props.DefaultValue
+	local callbacks: { (string) -> () } = if props.Callback then { props.Callback } else {}
+	local value = source(default_value)
+
+	local input = {
+		kind = "input" :: "input",
+
+		window = window,
+		tab = tab,
+		section = section,
+
+		title = title,
+
+		callbacks = callbacks,
+		
+		Value = value,
+	}
+	
+	local function fire_listeners(value: string)
+		for _, callback in callbacks do
+			task.spawn(callback, value)
+		end
+	end
+
+	local function toggle_listen(self: Toggle, callback: (string) -> ()): () -> ()
+		local idx = #callbacks + 1
+		callbacks[idx] = callback
+		return function()
+			-- no table.remove because it would fuck other indices
+			callbacks[idx] = nil
+		end
+	end
+	input.Listen = toggle_listen
+	
+	value:listen(fire_listeners)
+	
+	local box = create "TextBox" {
+		AnchorPoint = Vector2.new(1, 0.5),
+		AutomaticSize = Enum.AutomaticSize.X,
+		BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+		BackgroundTransparency = 0.1,
+		FontFace = fonts.builder_sans.regular,
+		PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
+		Position = UDim2.new(1, -116, 0.5, 0),
+		Size = UDim2.fromOffset(40, 19),
+		Text = default_value or "",
+		TextColor3 = Color3.fromRGB(235, 235, 235),
+		TextSize = 13,
+		theme_tag = "InputBox",
+
+		create "UICorner" {
+			CornerRadius = UDim.new(0, 4),
+		},
+
+		create "UIPadding" {
+			PaddingLeft = UDim.new(0, 7),
+			PaddingRight = UDim.new(0, 7),
+		},
+	} :: TextBox
+	
+	local connection = box.FocusLost:Connect(function()
+		value:set(box.Text)
+	end)
+	
+	table.insert(window.cleanups, function()
+		connection:Disconnect()
+	end)
+	
+	local instance = create "Frame" {
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+		LayoutOrder = 3,
+		Selectable = true,
+		Size = UDim2.fromScale(1, 0),
+		theme_tag = "Element",
+
+		create "UICorner" {
+			CornerRadius = UDim.new(0, 6),
+			theme_tag = "ElementCorner",
+		},
+
+		create "UIPadding" {
+			PaddingBottom = UDim.new(0, 6),
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 6),
+			PaddingTop = UDim.new(0, 6),
+		},
+
+		create "TextLabel" {
+			Active = true,
+			AutomaticSize = Enum.AutomaticSize.Y,
+			BackgroundTransparency = 1,
+			FontFace = fonts.builder_sans.regular,
+			Selectable = true,
+			Size = UDim2.fromScale(1, 0),
+			Text = title,
+			TextColor3 = Color3.fromRGB(235, 235, 235),
+			TextSize = 14,
+			TextWrapped = true,
+			TextXAlignment = Enum.TextXAlignment.Left,
+
+			create "UICorner" {
+				CornerRadius = UDim.new(0, 3),
+			},
+
+			create "UIFlexItem" {
+				FlexMode = Enum.UIFlexMode.Shrink,
+			},
+		},
+
+		create "UIListLayout" {
+			FillDirection = Enum.FillDirection.Horizontal,
+			Padding = UDim.new(0, 8),
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+		},
+
+		create "Frame" {
+			Active = true,
+			AnchorPoint = Vector2.new(1, 0.5),
+			AutomaticSize = Enum.AutomaticSize.XY,
+			BackgroundTransparency = 1,
+			LayoutOrder = 1,
+			Position = UDim2.fromScale(1, 0.5),
+			Selectable = true,
+
+			create "UIListLayout" {
+				SortOrder = Enum.SortOrder.LayoutOrder,
+			},
+
+			box,
+		},
+
+		create "UIStroke" {
+			Color = Color3.fromRGB(15, 16, 17),
+			Transparency = section.element_stroke_transparency,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			theme_tag = "ElementStroke",
+		},
+	} :: Frame
+	instance.Parent = section.container
+	input.instance = instance
+	
+	table.insert(section.elements, input)
+	active_window = nil
+	ELEMENT_FLAG(input, section, props)
+	return input
+end
+
 local function section_new(tab: Tab, props: SectionProps): Section
 	local title = props.Title
 	local order = props.Order :: number
@@ -3767,6 +4076,7 @@ local function section_new(tab: Tab, props: SectionProps): Section
 	active_window = window
 
 	local section = {
+		Input = input_new,
 		Button = button_new,
 		Toggle = toggle_new,
 		Divider = divider_new,
@@ -3922,20 +4232,20 @@ local function tab_new(window: Window, props: TabProps): Tab
 	local stroke_transparency = motion(1)
 	local label_color = motion(get_themed_property(window, "TabLabel", "DeselectedTextColor3"))
 	local image_color = motion(get_themed_property(window, "TabIcon", "DeselectedImageColor3"))
-	
+
 	local function update_springs()
 		if selected:get() then
 			content_visible:set(true)
 			bg_transparency:spring(get_themed_property(window, "Tab", "BackgroundTransparency"), springs.soft)
-			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency"), springs.soft)
-			
+			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency") or 1, springs.soft)
+
 			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor3"), springs.soft)
 			label_color:spring(get_themed_property(window, "TabLabel", "SelectedTextColor3"), springs.soft)
 		else
 			local bg_tr = get_themed_property(window, "Tab", "DeselectedBackgroundTransparency") or 1
 			bg_transparency:spring(bg_tr, springs.soft)
 			stroke_transparency:spring(1, springs.soft)
-			
+
 			image_color:spring(get_themed_property(window, "TabIcon", "DeselectedImageColor3"), springs.soft)
 			label_color:spring(get_themed_property(window, "TabLabel", "DeselectedTextColor3"), springs.soft)
 		end
@@ -4092,7 +4402,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		for _, cleanup in self.cleanups do
 			cleanup()
 		end
-		
+
 		if self.OnClose then
 			self.OnClose()
 		end
@@ -4111,7 +4421,7 @@ local function window_new(self: Library, props: WindowProps): Window
 
 	ENSURE_IMAGE = function(image: string): string
 		ensure_folder(dir)
-		if image:find("http") then
+		if string.find(image, "http") then
 			local imageDir = `{dir}/lovely.png`
 
 			if not isfile(imageDir) then
@@ -4155,7 +4465,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	end
 
 	local function window_get_config(self: Window): string
-		
+
 	end
 
 	local function window_save_config(self: Window, name: string?)
@@ -4333,7 +4643,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	local minimize_key = props.MinimizeKey or DEFAULT_MINIMIZE_KEY
 	local minimize_connection = UserInputService.InputBegan:Connect(function(input, gpe)
 		if not gpe and input.KeyCode == minimize_key then
-			(window :: Window):ToggleMinimized()
+			window_toggle_minimized(window :: Window)
 		end
 	end)
 	table.insert(cleanups, function()
