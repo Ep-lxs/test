@@ -2342,11 +2342,11 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		con1:Disconnect()
 		con2:Disconnect()
 	end)
+
+	table.insert(section.elements, dropdown)
 	
 	active_window = nil
-	print'attempting dropdown register'
 	ELEMENT_FLAG(dropdown, section, props) -- register flag
-	print'dropdown registered'
 
 	return dropdown
 end
