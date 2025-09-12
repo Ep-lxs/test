@@ -2344,8 +2344,10 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 	end)
 	
 	active_window = nil
+	print'attempting dropdown register'
 	ELEMENT_FLAG(dropdown, section, props) -- register flag
-	
+	print'dropdown registered'
+
 	return dropdown
 end
 
