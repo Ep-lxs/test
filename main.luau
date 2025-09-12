@@ -2992,6 +2992,8 @@ local function range_slider_new(section: Section, props: RangeSliderProps): Rang
 	instance.Parent = section.container
 	range_slider.instance = instance
 
+	ELEMENT_FLAG(range_slider, section, props)
+
 	value:listen(function(range)
 		fire_listeners(range)
 
@@ -3014,7 +3016,6 @@ local function range_slider_new(section: Section, props: RangeSliderProps): Rang
 	table.insert(section.elements, range_slider)
 
 	active_window = nil
-	ELEMENT_FLAG(range_slider, section, props)
 	return range_slider
 end
 
@@ -3195,6 +3196,8 @@ local function keybind_new(section: Section, props: KeybindProps): Keybind
 		end)
 	end
 
+	ELEMENT_FLAG(keybind, section, props)
+
 	value:listen(function(value)
 		fire_listeners(value)
 		button.Text = get_text_for_key(value)
@@ -3203,7 +3206,6 @@ local function keybind_new(section: Section, props: KeybindProps): Keybind
 	table.insert(section.elements, keybind)
 
 	active_window = nil
-	ELEMENT_FLAG(keybind, section, props)
 	return keybind
 end
 
@@ -3474,6 +3476,8 @@ local function slider_new(section: Section, props: SliderProps): Slider
 		connection = RunService.PreRender:Connect(update_value)
 	end
 
+	ELEMENT_FLAG(slider, section, props)
+
 	value:listen(function(value)
 		fire_listeners(value)
 
@@ -3486,7 +3490,6 @@ local function slider_new(section: Section, props: SliderProps): Slider
 	table.insert(section.elements, slider)
 
 	active_window = nil
-	ELEMENT_FLAG(slider, section, props)
 	return slider
 end
 
@@ -3609,6 +3612,8 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 	end
 
 	window:theme_changed(update_toggle_colors)
+
+	ELEMENT_FLAG(toggle, section, props)
 
 	value:listen(function(value)
 		fire_listeners(value)
@@ -3753,7 +3758,6 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 	table.insert(section.elements, toggle)
 
 	active_window = nil
-	ELEMENT_FLAG(toggle, section, props)
 	return toggle
 end
 
@@ -3951,6 +3955,8 @@ local function input_new(section: Section, props: InputProps): Input
 	end
 	input.Listen = toggle_listen
 	
+	ELEMENT_FLAG(input, section, props)
+	
 	value:listen(fire_listeners)
 	
 	local box = create "TextBox" {
@@ -4062,7 +4068,6 @@ local function input_new(section: Section, props: InputProps): Input
 	
 	table.insert(section.elements, input)
 	active_window = nil
-	ELEMENT_FLAG(input, section, props)
 	return input
 end
 
