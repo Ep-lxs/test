@@ -4479,16 +4479,24 @@ local function window_new(self: Library, props: WindowProps): Window
 		writefile(settings_dir, HttpService:JSONEncode(settings))
 	end
 
-	local function window_get_config(self: Window): string
-
-	end
-
 	local function window_save_config(self: Window, name: string?)
 		ensure_folder(dir)
 		ensure_folder(config_directory)
 		local content = encode_config(self.Flags)
 		local config_name = name or "default"
 		writefile(`{config_directory}/{config_name}.config`, content)
+	end
+	
+	local function window_create_config(self: Window, name: string?, flags: any)
+		ensure_folder(dir)
+		ensure_folder(config_directory)
+		local content = encode_config(flags)
+		local config_name = name or "default"
+		writefile(`{config_directory}/{config_name}.config`, content)
+	end
+
+	local function window_get_config(self: Window): string
+		return ''
 	end
 
 	local function window_load_config(self: Window, name: string?)
@@ -4623,6 +4631,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		Destroy = window_destroy,
 
 		SaveConfig = window_save_config,
+		CreateConfig = window_create_config,
 		GetConfig = window_get_config,
 		LoadConfig = window_load_config,
 		GetConfigs = window_get_configs,
