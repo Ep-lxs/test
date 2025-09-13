@@ -4168,11 +4168,12 @@ local function section_new(tab: Tab, props: SectionProps): Section
 			create "Frame" {
 				BackgroundTransparency = 1,
 				LayoutOrder = -1,
-				Size = UDim2.new(1, 0, 0, 14),
+				Size = UDim2.new(1, 0, 0, 15),
 
 				create "TextLabel" {
 					BackgroundTransparency = 1,
 					FontFace = fonts.builder_sans.medium,
+					TextXAlignment = Enum.TextXAlignment.Left,
 					LayoutOrder = 1,
 					Size = UDim2.fromScale(1, 1),
 					Text = title,
@@ -4184,7 +4185,7 @@ local function section_new(tab: Tab, props: SectionProps): Section
 
 				create "UIListLayout" {
 					FillDirection = Enum.FillDirection.Horizontal,
-					Padding = UDim.new(0, 6),
+					Padding = UDim.new(0, 8),
 					SortOrder = Enum.SortOrder.LayoutOrder,
 					VerticalAlignment = Enum.VerticalAlignment.Center,
 				},
