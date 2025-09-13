@@ -786,6 +786,7 @@ export type InputProps = {
 	Title: string,
 	DefaultValue: string,
 	Callback: ((Value: string) -> ())?,
+	PlaceholderText: string,
 
 	Flag: string?,
 	Order: number?,
@@ -1018,6 +1019,7 @@ local DEFAULT_THEMES = {
 
 		InputBox = {
 			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+			TextColor3 = Color3.fromRGB(200, 200, 200),
 			PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
 		},
 
@@ -3601,7 +3603,7 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 
 	window:theme_changed(update_toggle_colors)
 
-	ELEMENT_FLAG(toggle, section, props)
+	ELEMENT_FLAG(toggle :: Toggle, section, props)
 
 	value:listen(function(value)
 		fire_listeners(value)
@@ -3943,7 +3945,7 @@ local function input_new(section: Section, props: InputProps): Input
 	end
 	input.Listen = toggle_listen
 
-	ELEMENT_FLAG(input, section, props)
+	ELEMENT_FLAG(input :: Input, section, props)
 
 	value:listen(fire_listeners)
 
@@ -3954,6 +3956,7 @@ local function input_new(section: Section, props: InputProps): Input
 		BackgroundTransparency = 0.1,
 		FontFace = fonts.builder_sans.regular,
 		PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
+		PlaceholderText = props.PlaceholderText or '',
 		Position = UDim2.new(1, -116, 0.5, 0),
 		Size = UDim2.fromOffset(40, 19),
 		Text = default_value or "",
@@ -4363,13 +4366,24 @@ local function tab_new(window: Window, props: TabProps): Tab
 end
 
 local function window_new(self: Library, props: WindowProps): Window
+	local position = motion(UDim2.fromScale(0.5, 0.5))
+	local body_transparency = motion(1)
+	local container_transparency = motion(1)
+	local stroke_transparency = motion(1)
+	
 	local function window_minimize(self: Window)
 		if self.Minimized then
 			return
 		end
 
 		self.Minimized = true
-		self.container.Visible = false
+		--self.container.Visible = false
+		
+		position:spring(self.container.Position + UDim2.fromOffset(0, 30), springs.soft)
+		body_transparency:spring(1, springs.fast_soft)
+		container_transparency:spring(1, springs.fast_soft)
+		stroke_transparency:spring(0.999, springs.fast_soft)
+		
 		for _, element in self.Flags do
 			if element.kind == "dropdown" then
 				element:Close()
@@ -4382,8 +4396,13 @@ local function window_new(self: Library, props: WindowProps): Window
 			return
 		end
 
+		position:spring(self.container.Position - UDim2.fromOffset(0, 30), springs.meow_bounce)
+		body_transparency:spring(0, springs.fast_soft)
+		container_transparency:spring(get_themed_property(self, "WindowShadow", "ImageTransparency"), springs.fast_soft)
+		stroke_transparency:spring(get_themed_property(self, "WindowStroke", "Transparency"), springs.fast_soft)
+
 		self.Minimized = false
-		self.container.Visible = true
+		--self.container.Visible = true
 	end
 
 	local function window_toggle_minimized(self: Window)
@@ -4714,7 +4733,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			box_text_transparency:spring(get_themed_property(window :: Window, "Box", "TextTransparency"), springs.soft)	
 			element_bg_transparency:spring(get_themed_property(window :: Window, "Element", "BackgroundTransparency"), springs.soft)
 			element_text_transparency:spring(get_themed_property(window :: Window, "Element", "TextTransparency") or 0, springs.soft)		
-			exit_stroke_transparency:spring(get_themed_property(window :: Window, "ElementStroke", "Transparency"), springs.soft)	
+			exit_stroke_transparency:spring(get_themed_property(window :: Window, "WindowStroke", "Transparency"), springs.soft)	
 		else
 			exit_bg_transparency:spring(1, springs.soft)
 			notification_transparency:spring(1, springs.soft)
@@ -4850,7 +4869,6 @@ local function window_new(self: Library, props: WindowProps): Window
 	} :: Frame
 
 	local size = UDim2.fromOffset(622, 416)
-	local position = motion(UDim2.fromScale(0.5, 0.5))
 
 	local drag_connection: RBXScriptConnection?
 	local function stop_drag()
@@ -4873,7 +4891,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			-- dragging the topbar that the topbar will drag with their cursor
 			local new_position = UDim2.fromOffset(mouse_location.X - drag_offset.X, mouse_location.Y - drag_offset.Y)
 
-			position:spring(new_position, springs.soft)
+			position:spring(new_position, springs.fast_soft)
 		end)
 	end
 
@@ -4884,7 +4902,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://87218987217949",
 		ImageColor3 = Color3.new(),
-		ImageTransparency = 0.7,
+		ImageTransparency = container_transparency,
 		Position = position,
 		ScaleType = Enum.ScaleType.Slice,
 		Size = size,
@@ -4897,6 +4915,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		-- container
 		create "CanvasGroup" {
 			AnchorPoint = Vector2.new(0.5, 0.5),
+			GroupTransparency = body_transparency,
 			BackgroundTransparency = 1,
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.new(1, -30, 1, -30),
@@ -4914,7 +4933,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			create "UIStroke" {
 				Color = Color3.new(1, 1, 1),
 				Thickness = 1.2,
-				Transparency = 0.95,
+				Transparency = stroke_transparency,
 				theme_tag = "WindowStroke",
 			},
 
@@ -5038,7 +5057,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	window.sidebar = sidebar
 	window.content_container = content_container
 	window.container = container
-
+	
 	table.insert(registry.windows, window)
 	active_window = nil
 
@@ -5052,6 +5071,10 @@ local function window_new(self: Library, props: WindowProps): Window
 	if theme then
 		window_load_theme(window :: Window, theme)
 	end
+	
+	body_transparency:spring(0, springs.fast_soft)
+	container_transparency:spring(get_themed_property(window :: Window, "WindowShadow", "ImageTransparency"), springs.fast_soft)
+	stroke_transparency:spring(get_themed_property(window :: Window, "WindowStroke", "Transparency"), springs.fast_soft)
 
 	return window
 end
