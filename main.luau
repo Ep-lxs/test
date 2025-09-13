@@ -3911,7 +3911,7 @@ local function input_new(section: Section, props: InputProps): Input
 	active_window = window
 
 	local title = props.Title
-	local default_value = props.DefaultValue
+	local default_value = props.DefaultValue or ''
 	local callbacks: { (string) -> () } = if props.Callback then { props.Callback } else {}
 	local value = source(default_value)
 
