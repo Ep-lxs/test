@@ -4236,7 +4236,7 @@ local function tab_new(window: Window, props: TabProps): Tab
 		if selected:get() then
 			content_visible:set(true)
 			bg_transparency:spring(get_themed_property(window, "Tab", "BackgroundTransparency"), springs.soft)
-			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency") or 1, springs.soft)
+			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency") or 0, springs.soft)
 
 			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor3"), springs.soft)
 			label_color:spring(get_themed_property(window, "TabLabel", "SelectedTextColor3"), springs.soft)
@@ -4495,8 +4495,20 @@ local function window_new(self: Library, props: WindowProps): Window
 		writefile(`{config_directory}/{config_name}.config`, content)
 	end
 
-	local function window_get_config(self: Window): string
-		return ''
+	local function window_get_config(self: Window, name: string)
+		ensure_folder(dir)
+		ensure_folder(config_directory)
+		
+		local config_name = name or window_get_settings().config or "default"
+		local content = isfile(`{config_directory}/{config_name}.config`) and readfile(`{config_directory}/{config_name}.config`)
+		assert(content, `config file not found`)
+
+		local config = decode_config(content)
+		if not config or not config.Flags then
+			return
+		end 
+			
+		return config.Flags
 	end
 
 	local function window_load_config(self: Window, name: string?)
