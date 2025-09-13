@@ -786,7 +786,7 @@ export type InputProps = {
 	Title: string,
 	DefaultValue: string,
 	Callback: ((Value: string) -> ())?,
-	
+
 	Flag: string?,
 	Order: number?,
 }
@@ -1015,7 +1015,7 @@ local DEFAULT_THEMES = {
 		ElementCorner = {
 			CornerRadius = UDim.new(0, 6)
 		},
-		
+
 		InputBox = {
 			BackgroundColor3 = Color3.fromRGB(50, 50, 50),
 			PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
@@ -1088,18 +1088,6 @@ local DEFAULT_THEMES = {
 		TabCorner = {
 			CornerRadius = UDim2.new(0,6)
 		},
-
-		Notification = {
-			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
-			BackgroundTransparency = 0,
-		},
-		NotificationStroke = {
-			Color = Color3.fromRGB(255, 255, 255),
-			Transparency = 0.95,
-		},
-		NotificationCorner = {
-			CornerRadius = UDim.new(0, 8)
-		},
 	},
 
 }
@@ -1123,7 +1111,7 @@ if RunService:IsStudio() then
 	local WORKSPACE = Instance.new("Folder")
 	WORKSPACE.Name = "workspace"
 	WORKSPACE.Parent = workspace
-	
+
 	isfile = function(path: string): boolean
 		local split = string.split(path, "/")
 		local file = WORKSPACE :: Instance
@@ -1723,8 +1711,8 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 			return
 		end
 
-		bg_transparency:spring(get_themed_property(window, "Notification", "BackgroundTransparency"), springs.soft)
-		stroke_transparency:spring(get_themed_property(window, "NotificationStroke", "Transparency"), springs.soft)
+		bg_transparency:spring(get_themed_property(window, "ContentContainer", "BackgroundTransparency"), springs.soft)
+		stroke_transparency:spring(get_themed_property(window, "WindowStroke", "Transparency"), springs.soft)
 		title_text_transparency:spring(get_themed_property(window, "Primary", "TextTransparency") or 0, springs.soft)
 		content_text_transparency:spring(get_themed_property(window, "Secondary", "TextTransparency") or 0, springs.soft)
 		position:spring(UDim2.fromOffset(0, 0), springs.fast_soft)
@@ -1766,7 +1754,7 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 		BackgroundTransparency = bg_transparency,
 		Size = UDim2.fromScale(1, 0),
 		Position = position,
-		theme_tag = "Notification",
+		theme_tag = "ContentContainer",
 
 		create "TextButton" {
 			Size = UDim2.fromScale(1, 1),
@@ -1810,7 +1798,6 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 		},
 
 		create "UICorner" {
-			theme_tag = "NotificationCorner"	
 		},
 
 		create "UIPadding" {
@@ -1821,9 +1808,10 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 		},
 
 		create "UIStroke" {
-			Color = Color3.new(255, 255, 255),
+			Color = Color3.new(1, 1, 1),
+			Thickness = 1.2,
 			Transparency = stroke_transparency,
-			theme_tag = "NotificationStroke",
+			theme_tag = "WindowStroke",
 		},
 	} :: Frame
 
@@ -1878,7 +1866,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			local text = string.lower(search_text:get())
 			return text == "" or text == string.rep(" ", #text) or string.sub(item, 1, #text) == text
 		end
-		
+
 		local function button(item: string, order: number): TextButton
 			local bg_color = motion(Color3.new())
 			local bg_transparency = motion(1)
@@ -1916,9 +1904,9 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 
 			local disconnect1 = value:listen(spring_motions)
 			local disconnect2 = open:listen(spring_motions)
-			
+
 			local item_visible = source(match_search(item, search_text:get()))
-			
+
 			local disconnect3 = search_text:listen(function(search)
 				item_visible:set(match_search(item, search))
 			end)
@@ -2150,7 +2138,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 	local dropdown_size = motion(UDim2.fromScale(1, 0))
 	local dropdown_transparency = motion(1)
 	local dropdown_stroke_transparency = motion(1)
-	
+
 	dropdown_scroll = create "ScrollingFrame" {
 		Active = true,
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
@@ -2197,7 +2185,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			PaddingRight = UDim.new(0, 6),
 		},
 	} :: TextBox
-	
+
 	search_box:GetPropertyChangedSignal("Text"):Connect(function()
 		search_text:set(search_box.Text)
 	end)
@@ -2250,7 +2238,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		},
 	} :: Frame
 	scroll_container.Parent = ensure_gui()
-	
+
 	local function update_divider()
 		if open:get() then
 			divider_transparency:spring(get_themed_property(window, "Divider", "BackgroundTransparency"), springs.fast_soft)
@@ -2279,7 +2267,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			scroll_container.Visible = false
 		end
 	end)
-	
+
 	local function calculate_scroll_size()
 		dropdown_target_size = UDim2.new(
 			1,
@@ -2298,7 +2286,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			dropdown_size:spring(dropdown_target_size, springs.fast_soft)
 		end
 	end
-	
+
 	open:listen(function(open)
 		dropdown.IsOpen = open
 		if open then
@@ -2314,7 +2302,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			if search_box:IsFocused() then
 				search_box:ReleaseFocus()
 			end
-			
+
 			dropdown_size:spring(UDim2.fromScale(1, 0), springs.fast_soft)
 			dropdown_transparency:spring(1, springs.soft)
 			dropdown_stroke_transparency:spring(1, springs.soft)
@@ -2344,7 +2332,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 	end)
 
 	table.insert(section.elements, dropdown)
-	
+
 	active_window = nil
 	ELEMENT_FLAG(dropdown, section, props) -- register flag
 
@@ -3572,13 +3560,13 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 
 		Value = value,
 	}
-	
+
 	local accent_toggle_thumb = motion(Color3.fromRGB(235, 235, 235))
 	local accent_toggle_stroke = motion(Color3.fromRGB(235, 235, 235))
 	local toggle_position = motion(UDim2.fromScale(0, 0.5))
 	local toggle_anchor_point = motion(Vector2.new(0, 0.5))
 	local stroke_transparency = motion(1)
-	
+
 	section.visible:listen(function(visible)
 		if visible then
 			local value = get_themed_property(window, "ToggleStroke", "Transparency") :: number
@@ -3587,7 +3575,7 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 			stroke_transparency:spring(1, springs.soft)
 		end
 	end)
-	
+
 	local function fire_listeners(value: boolean)
 		for _, callback in callbacks do
 			task.spawn(callback, value)
@@ -3935,10 +3923,10 @@ local function input_new(section: Section, props: InputProps): Input
 		title = title,
 
 		callbacks = callbacks,
-		
+
 		Value = value,
 	}
-	
+
 	local function fire_listeners(value: string)
 		for _, callback in callbacks do
 			task.spawn(callback, value)
@@ -3954,11 +3942,11 @@ local function input_new(section: Section, props: InputProps): Input
 		end
 	end
 	input.Listen = toggle_listen
-	
+
 	ELEMENT_FLAG(input, section, props)
-	
+
 	value:listen(fire_listeners)
-	
+
 	local box = create "TextBox" {
 		AnchorPoint = Vector2.new(1, 0.5),
 		AutomaticSize = Enum.AutomaticSize.X,
@@ -3982,15 +3970,15 @@ local function input_new(section: Section, props: InputProps): Input
 			PaddingRight = UDim.new(0, 7),
 		},
 	} :: TextBox
-	
+
 	local connection = box.FocusLost:Connect(function()
 		value:set(box.Text)
 	end)
-	
+
 	table.insert(window.cleanups, function()
 		connection:Disconnect()
 	end)
-	
+
 	local instance = create "Frame" {
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundColor3 = Color3.fromRGB(13, 14, 15),
@@ -4065,7 +4053,7 @@ local function input_new(section: Section, props: InputProps): Input
 	} :: Frame
 	instance.Parent = section.container
 	input.instance = instance
-	
+
 	table.insert(section.elements, input)
 	active_window = nil
 	return input
@@ -4719,7 +4707,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		if exit_dialogue_visible:get() then
 			-- visible
 			exit_bg_transparency:spring(0.2, springs.soft)
-			notification_transparency:spring(get_themed_property(window :: Window, "Notification", "BackgroundTransparency"), springs.soft)
+			notification_transparency:spring(get_themed_property(window :: Window, "ContentContainer", "BackgroundTransparency"), springs.soft)
 			notification_title_transparency:spring(get_themed_property(window :: Window, "Primary", "TextTransparnency") or 0, springs.soft)
 			notification_content_transparency:spring(get_themed_property(window :: Window, "Secondary", "TextTransparnency") or 0, springs.soft)
 			box_bg_transparency:spring(get_themed_property(window :: Window, "Box", "BackgroundTransparency"), springs.soft)
@@ -4764,7 +4752,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			BackgroundTransparency = notification_transparency,
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.fromOffset(220, 0),
-			theme_tag = "Notification",
+			theme_tag = "ContentContainer",
 
 			create "TextLabel" {
 				BackgroundTransparency = 1,
@@ -4779,7 +4767,6 @@ local function window_new(self: Library, props: WindowProps): Window
 			},
 
 			create "UICorner" {
-				theme_tag = "NotificationCorner",
 			},
 
 			create "TextLabel" {
