@@ -1075,7 +1075,7 @@ local DEFAULT_THEMES = {
 		Tab = {
 			BackgroundColor3 = Color3.fromRGB(13, 14, 15),
 			SelectedBackgroundTransparency = 0,
-			DeselectedBackgroundTransparency = 0,
+			DeselectedBackgroundTransparency = 1,
 		},
 		TabStroke = {
 			Color = Color3.fromRGB(15, 16, 17),
