@@ -1630,6 +1630,8 @@ local function ELEMENT_FLAG<Props>(element: Element, section: Section, props: Pr
 	local existing_flag = flags[flag_name]
 	assert(not existing_flag, `a flag with the name {flag_name} already exists`)
 
+	print(flag_name)
+
 	flags[flag_name] = element
 end
 
@@ -4605,20 +4607,15 @@ local function window_new(self: Library, props: WindowProps): Window
 		return theme
 	end
 
-	local themes_dir = `{dir}/themes`
-	print('themes_dir:', themes_dir)
-	print('dir:', dir)
 	local function window_load_themes(window: Window): { [string]: ThemeData }
 		ensure_folder(dir)
 		ensure_folder(themes_dir)
 
 		for theme_name, theme in DEFAULT_THEMES :: { [string]: ThemeData } do
-			print(`creating {themes_dir}/{theme_name}.json`)
 			writefile(`{themes_dir}/{theme_name}.json`, ser_theme(theme))
 		end
 
 		for _, theme_file in listfiles(themes_dir) do
-			print('theme_file:', theme_file)
 			local content = readfile(theme_file)
 
 			if not content then
