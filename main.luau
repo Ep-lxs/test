@@ -4572,12 +4572,11 @@ local function window_new(self: Library, props: WindowProps): Window
 		return theme
 	end
 
-print'v1'
-
 	local themes_dir = `{dir}/themes`
 	local function window_load_themes(window: Window): { [string]: ThemeData }
 		ensure_folder(dir)
 		ensure_folder(themes_dir)
+
 		for theme_name, theme in DEFAULT_THEMES :: { [string]: ThemeData } do
 			writefile(`{themes_dir}/{theme_name}.json`, ser_theme(theme))
 		end
@@ -4586,7 +4585,6 @@ print'v1'
 			print(theme_file)
 			local content = readfile(theme_file)
 			if not content then
-				print("no contents")
 				print(content)
 				continue
 			end
@@ -4599,6 +4597,9 @@ print'v1'
 	end
 
 	local function window_get_theme(window: Window, theme_name: string): string
+		ensure_folder(dir)
+		ensure_folder(themes_dir)
+
 		local theme_dir = `{themes_dir}/{theme_name}.json`
 		return isfile(theme_dir) and ser_theme(readfile(theme_dir))
 	end
@@ -4614,6 +4615,7 @@ print'v1'
 	local function window_get_themes(window: Window, name: string): { [string]: ThemeData }
 		ensure_folder(dir)
 		ensure_folder(themes_dir)
+		
 		window_load_themes(window)
 		return window.themes
 	end
