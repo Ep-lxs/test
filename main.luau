@@ -1074,7 +1074,8 @@ local DEFAULT_THEMES = {
 
 		Tab = {
 			BackgroundColor3 = Color3.fromRGB(13, 14, 15),
-			BackgroundTransparency = 0,
+			SelectedBackgroundTransparency = 0,
+			DeselectedBackgroundTransparency = 0,
 		},
 		TabStroke = {
 			Color = Color3.fromRGB(15, 16, 17),
@@ -4235,13 +4236,13 @@ local function tab_new(window: Window, props: TabProps): Tab
 	local function update_springs()
 		if selected:get() then
 			content_visible:set(true)
-			bg_transparency:spring(get_themed_property(window, "Tab", "BackgroundTransparency") or 0, springs.soft)
+			bg_transparency:spring(get_themed_property(window, "Tab", "SelectedBackgroundTransparency") or 0, springs.soft)
 			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency") or 0, springs.soft)
 
 			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor3"), springs.soft)
 			label_color:spring(get_themed_property(window, "TabLabel", "SelectedTextColor3"), springs.soft)
 		else
-			bg_transparency:spring(1, springs.soft)
+			bg_transparency:spring(get_themed_property(window, "Tab", "DeselectedBackgroundTransparency") or 1, springs.soft)
 			stroke_transparency:spring(1, springs.soft)
 
 			image_color:spring(get_themed_property(window, "TabIcon", "DeselectedImageColor3"), springs.soft)
