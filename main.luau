@@ -3775,12 +3775,6 @@ local function button_new(section: Section, props: ButtonProps): Button
 		callbacks = callbacks,
 	}
 
-	local accent_button_thumb = motion(Color3.fromRGB(235, 235, 235))
-	local accent_button_stroke = motion(Color3.fromRGB(235, 235, 235))
-	local button_position = motion(UDim2.fromScale(0, 0.5))
-	local button_anchor_point = motion(Vector2.new(0, 0.5))
-	local stroke_transparency = motion(1)
-
 	local function fire_listeners()
 		for _, callback in callbacks do
 			task.spawn(callback)
@@ -3952,13 +3946,14 @@ local function input_new(section: Section, props: InputProps): Input
 		AnchorPoint = Vector2.new(1, 0.5),
 		AutomaticSize = Enum.AutomaticSize.X,
 		BackgroundColor3 = Color3.fromRGB(50, 50, 50),
-		BackgroundTransparency = 0.1,
+		BackgroundTransparency = section.element_bg_transparency,
 		FontFace = fonts.builder_sans.regular,
 		PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
 		PlaceholderText = props.PlaceholderText or '',
 		Position = UDim2.new(1, -116, 0.5, 0),
 		Size = UDim2.fromOffset(40, 19),
 		Text = default_value or "",
+		TextTransparency = section.content_transparency,
 		TextColor3 = Color3.fromRGB(235, 235, 235),
 		TextSize = 13,
 		theme_tag = "InputBox",
@@ -4005,6 +4000,7 @@ local function input_new(section: Section, props: InputProps): Input
 			Active = true,
 			AutomaticSize = Enum.AutomaticSize.Y,
 			BackgroundTransparency = 1,
+			TextTransparency = section.content_transparency,
 			FontFace = fonts.builder_sans.regular,
 			Selectable = true,
 			Size = UDim2.fromScale(1, 0),
