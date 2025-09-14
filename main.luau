@@ -3945,8 +3945,6 @@ local function input_new(section: Section, props: InputProps): Input
 	end
 	input.Listen = toggle_listen
 
-	ELEMENT_FLAG(input :: Input, section, props)
-
 	value:listen(fire_listeners)
 
 	local box = create "TextBox" {
@@ -4011,7 +4009,7 @@ local function input_new(section: Section, props: InputProps): Input
 			Size = UDim2.fromScale(1, 0),
 			Text = title,
 			TextColor3 = Color3.fromRGB(235, 235, 235),
-			TextSize = 14,
+			TextSize = 13,
 			TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Left,
 
@@ -4058,6 +4056,8 @@ local function input_new(section: Section, props: InputProps): Input
 	input.instance = instance
 
 	table.insert(section.elements, input)
+	ELEMENT_FLAG(input :: Input, section, props)
+
 	active_window = nil
 	return input
 end
