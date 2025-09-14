@@ -4583,10 +4583,12 @@ local function window_new(self: Library, props: WindowProps): Window
 
 		for _, theme_file in listfiles(themes_dir) do
 			local content = readfile(theme_file)
-			
+
 			if not content then
 				continue
 			end
+
+			print(content)
 
 			local theme_name = string.match(theme_file, "(.+)%..+$") or theme_file
 			window.themes[theme_name] = des_theme(content)
