@@ -4014,6 +4014,7 @@ local function input_new(section: Section, props: InputProps): Input
 			TextSize = 13,
 			TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Left,
+			theme_tag = "Primary",
 
 			create "UICorner" {
 				CornerRadius = UDim.new(0, 3),
