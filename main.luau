@@ -4605,11 +4605,14 @@ local function window_new(self: Library, props: WindowProps): Window
 	end
 
 	local themes_dir = `{dir}/themes`
+	print('themes_dir:', themes_dir)
+	print('dir:', dir)
 	local function window_load_themes(window: Window): { [string]: ThemeData }
 		ensure_folder(dir)
 		ensure_folder(themes_dir)
 
 		for theme_name, theme in DEFAULT_THEMES :: { [string]: ThemeData } do
+			print(`creating {themes_dir}/{theme_name}.json`)
 			writefile(`{themes_dir}/{theme_name}.json`, ser_theme(theme))
 		end
 
@@ -4619,8 +4622,6 @@ local function window_new(self: Library, props: WindowProps): Window
 			if not content then
 				continue
 			end
-
-			print(content)
 
 			local theme_name = string.match(theme_file, "(.+)%..+$") or theme_file
 			window.themes[theme_name] = des_theme(content)
