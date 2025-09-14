@@ -4581,6 +4581,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 
 		for _, theme_file in listfiles(themes_dir) do
+			print(theme_file)
 			local content = readfile(`{themes_dir}/{theme_file}`)
 			if not content then
 				print("no contents")
