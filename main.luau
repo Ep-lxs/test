@@ -4488,7 +4488,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		ensure_folder(config_directory)
 		
 		local content = encode_config(self.Flags)
-		writefile(`{config_directory}/{config_name}.config`, content)
+		writefile(`{config_directory}/{name}.config`, content)
 
 		return content
 	end
@@ -4617,13 +4617,19 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 
 		for _, theme_file in listfiles(themes_dir) do
+			print('theme_file:', theme_file)
 			local content = readfile(theme_file)
 
 			if not content then
 				continue
 			end
 
-			local theme_name = string.match(theme_file, "(.+)%..+$") or theme_file
+			local theme_name = string.match(theme_file, "([^/\\]+)%.%w+$")
+			if not theme_name then
+				-- unable to get a valid theme name
+				continue
+			end 
+
 			window.themes[theme_name] = des_theme(content)
 		end
 
