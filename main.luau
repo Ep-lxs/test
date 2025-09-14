@@ -4641,7 +4641,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		ensure_folder(themes_dir)
 
 		local theme_dir = `{themes_dir}/{theme_name}.json`
-		return isfile(theme_dir) and ser_theme(readfile(theme_dir))
+		return isfile(theme_dir) and readfile(theme_dir)
 	end
 
 	local function window_add_theme(window: Window, name: string, data: string)
