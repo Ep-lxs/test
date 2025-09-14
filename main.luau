@@ -4607,6 +4607,8 @@ local function window_new(self: Library, props: WindowProps): Window
 		return theme
 	end
 
+	local themes_dir = `{dir}/themes`
+	
 	local function window_load_themes(window: Window): { [string]: ThemeData }
 		ensure_folder(dir)
 		ensure_folder(themes_dir)
