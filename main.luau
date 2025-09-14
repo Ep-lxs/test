@@ -4602,7 +4602,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		ensure_folder(dir)
 		ensure_folder(themes_dir)
 
-		writefile(`{themes_dir}/{name}.theme`, data)
+		writefile(`{themes_dir}/{name}.json`, data)
 		window.themes[name] = data
 	end
 
