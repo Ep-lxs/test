@@ -4608,7 +4608,8 @@ local function window_new(self: Library, props: WindowProps): Window
 	end
 
 	local themes_dir = `{dir}/themes`
-	
+	print("github sucks")
+
 	local function window_load_themes(window: Window): { [string]: ThemeData }
 		ensure_folder(dir)
 		ensure_folder(themes_dir)
