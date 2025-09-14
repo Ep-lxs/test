@@ -3946,7 +3946,7 @@ local function input_new(section: Section, props: InputProps): Input
 		AnchorPoint = Vector2.new(1, 0.5),
 		AutomaticSize = Enum.AutomaticSize.X,
 		BackgroundColor3 = Color3.fromRGB(50, 50, 50),
-		BackgroundTransparency = section.element_bg_transparency,
+		BackgroundTransparency = section.box_bg_transparency,
 		FontFace = fonts.builder_sans.regular,
 		PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
 		PlaceholderText = props.PlaceholderText or '',
@@ -3978,6 +3978,7 @@ local function input_new(section: Section, props: InputProps): Input
 
 	local instance = create "Frame" {
 		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = section.element_bg_transparency,
 		BackgroundColor3 = Color3.fromRGB(13, 14, 15),
 		LayoutOrder = order,
 		Selectable = true,
