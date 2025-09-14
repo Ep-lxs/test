@@ -3984,7 +3984,7 @@ local function input_new(section: Section, props: InputProps): Input
 	local instance = create "Frame" {
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundColor3 = Color3.fromRGB(13, 14, 15),
-		LayoutOrder = 3,
+		LayoutOrder = order,
 		Selectable = true,
 		Size = UDim2.fromScale(1, 0),
 		theme_tag = "Element",
