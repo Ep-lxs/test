@@ -2251,6 +2251,8 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 	end
 	window:theme_changed(update_divider)
 
+	ELEMENT_FLAG(dropdown, section, props) -- register flag
+
 	visible:listen(function(visible)
 		if not visible then
 			open:set(false)
@@ -2337,7 +2339,6 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 	table.insert(section.elements, dropdown)
 
 	active_window = nil
-	ELEMENT_FLAG(dropdown, section, props) -- register flag
 
 	return dropdown
 end
@@ -2601,6 +2602,8 @@ local function color_picker_new(section: Section, props: ColorPickerProps): Colo
 	instance.Parent = section.container
 	color_picker.instance = instance
 
+	ELEMENT_FLAG(color_picker, section, props)
+
 	value:listen(function(color)
 		fire_listeners(color)
 
@@ -2612,7 +2615,6 @@ local function color_picker_new(section: Section, props: ColorPickerProps): Colo
 	table.insert(section.elements, color_picker)
 
 	active_window = nil
-	ELEMENT_FLAG(color_picker, section, props)
 	return color_picker
 end
 
@@ -3892,9 +3894,9 @@ local function button_new(section: Section, props: ButtonProps): Button
 	button.instance = instance
 
 	table.insert(section.elements, button)
+	ELEMENT_FLAG(button, section, props)
 
 	active_window = nil
-	ELEMENT_FLAG(button, section, props)
 	return button
 end
 
@@ -3940,6 +3942,8 @@ local function input_new(section: Section, props: InputProps): Input
 	end
 	input.Listen = toggle_listen
 
+	ELEMENT_FLAG(input :: Input, section, props)
+
 	value:listen(fire_listeners)
 
 	local box = create "TextBox" {
@@ -3978,8 +3982,8 @@ local function input_new(section: Section, props: InputProps): Input
 
 	local instance = create "Frame" {
 		AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundTransparency = section.element_bg_transparency,
 		BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+		BackgroundTransparency = section.element_bg_transparency,
 		LayoutOrder = order,
 		Selectable = true,
 		Size = UDim2.fromScale(1, 0),
@@ -4054,7 +4058,6 @@ local function input_new(section: Section, props: InputProps): Input
 	input.instance = instance
 
 	table.insert(section.elements, input)
-	ELEMENT_FLAG(input :: Input, section, props)
 
 	active_window = nil
 	return input
@@ -4478,7 +4481,7 @@ local function window_new(self: Library, props: WindowProps): Window
 
 	local function window_save_config(self: Window, name: string?)
 		if not name then
-			return -- add error catching here
+			return
 		end
 
 		ensure_folder(dir)
@@ -4490,7 +4493,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		return content
 	end
 	
-	local function window_create_config(self: Window, name: string?, flags)
+	local function window_create_config(self: Window, name: string, flags)
 		if not name or not flags then
 			return
 		end
