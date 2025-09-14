@@ -4480,44 +4480,62 @@ local function window_new(self: Library, props: WindowProps): Window
 	end
 
 	local function window_save_config(self: Window, name: string?)
-		ensure_folder(dir)
-		ensure_folder(config_directory)
-		local content = encode_config(self.Flags)
-		local config_name = name or "default"
-		writefile(`{config_directory}/{config_name}.config`, content)
-	end
-	
-	local function window_create_config(self: Window, name: string?, flags: any)
-		ensure_folder(dir)
-		ensure_folder(config_directory)
-		local content = encode_config(flags)
-		local config_name = name or "default"
-		writefile(`{config_directory}/{config_name}.config`, content)
-	end
+		if not name then
+			return -- add error catching here
+		end
 
-	local function window_get_config(self: Window, name: string)
 		ensure_folder(dir)
 		ensure_folder(config_directory)
 		
-		local config_name = name or window_get_settings().config or "default"
-		local content = isfile(`{config_directory}/{config_name}.config`) and readfile(`{config_directory}/{config_name}.config`)
-		assert(content, `config file not found`)
+		local content = encode_config(self.Flags)
+		writefile(`{config_directory}/{config_name}.config`, content)
 
-		local config = decode_config(content)
-		if not config or not config.Flags then
-			return
-		end 
-			
-		return config.Flags
+		return content
 	end
+	
+	local function window_create_config(self: Window, name: string?, flags)
+		if not name or not flags then
+			return
+		end
 
-	local function window_load_config(self: Window, name: string?)
 		ensure_folder(dir)
 		ensure_folder(config_directory)
 
-		local config_name = name or window_get_settings().config or "default"
-		local content = isfile(`{config_directory}/{config_name}.config`) and readfile(`{config_directory}/{config_name}.config`)
-		assert(content, `config file not found`)
+		local content = encode_config(flags)
+		writefile(`{config_directory}/{name}.config`, content)
+	end
+
+	local function window_get_config(self: Window, name: string) -- name always inputted, it can be 'default' for some.
+		ensure_folder(dir)
+		ensure_folder(config_directory)
+		
+		if not isfile(`{config_directory}/{name}.config`) then
+			return
+		end
+
+		local config = decode_config(readfile(`{config_directory}/{name}.config`))
+		
+		if not config then
+			return
+		end 
+			
+		return config
+	end
+
+	-- this function is automatically called after all elements are created inside the main script. new users will also have this executed (and they dont have any cfg files)
+	local function window_load_config(self: Window, name: string?)
+		if not name then
+			return 
+		end
+
+		ensure_folder(dir)
+		ensure_folder(config_directory)
+
+		local content = isfile(`{config_directory}/{name}.config`) and readfile(`{config_directory}/{name}.config`)
+
+		if not content then
+			return
+		end
 
 		local flags = decode_config(content)
 		for name, element in self.Flags do
@@ -4542,6 +4560,20 @@ local function window_new(self: Library, props: WindowProps): Window
 			configs[file_name] = content
 		end
 		return configs
+	end
+
+	local function window_init_config(self: Window) -- Load default config
+		local config_name = window_get_settings().config or "default"
+
+		local content = window_get_config(self, config_name)
+
+		if not content then
+			-- create default
+			window_save_config(self, config_name)
+		else
+			-- load default
+			window_load_config(self, content)
+		end
 	end
 
 	local function ser_theme(theme: ThemeData)
@@ -4652,6 +4684,7 @@ local function window_new(self: Library, props: WindowProps): Window
 
 		Destroy = window_destroy,
 
+		InitConfig = window_init_config,
 		SaveConfig = window_save_config,
 		CreateConfig = window_create_config,
 		GetConfig = window_get_config,
