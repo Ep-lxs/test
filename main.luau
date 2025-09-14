@@ -4582,10 +4582,9 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 
 		for _, theme_file in listfiles(themes_dir) do
-			print(theme_file)
 			local content = readfile(theme_file)
+			
 			if not content then
-				print(content)
 				continue
 			end
 
@@ -4615,7 +4614,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	local function window_get_themes(window: Window, name: string): { [string]: ThemeData }
 		ensure_folder(dir)
 		ensure_folder(themes_dir)
-		
+
 		window_load_themes(window)
 		return window.themes
 	end
