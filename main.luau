@@ -4235,17 +4235,17 @@ local function tab_new(window: Window, props: TabProps): Tab
 	local function update_springs()
 		if selected:get() then
 			content_visible:set(true)
-			bg_transparency:spring(get_themed_property(window, "Tab", "BackgroundTransparency") or 0, springs.fast_soft)
-			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency") or 0, springs.fast_soft)
+			bg_transparency:spring(get_themed_property(window, "Tab", "BackgroundTransparency") or 0, springs.soft)
+			stroke_transparency:spring(get_themed_property(window, "TabStroke", "Transparency") or 0, springs.soft)
 
-			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor3"), springs.fast_soft)
-			label_color:spring(get_themed_property(window, "TabLabel", "SelectedTextColor3"), springs.fast_soft)
+			image_color:spring(get_themed_property(window, "TabIcon", "SelectedImageColor3"), springs.soft)
+			label_color:spring(get_themed_property(window, "TabLabel", "SelectedTextColor3"), springs.soft)
 		else
-			bg_transparency:spring(1, springs.fast_soft)
-			stroke_transparency:spring(0.999, springs.fast_soft)
+			bg_transparency:spring(1, springs.soft)
+			stroke_transparency:spring(1, springs.soft)
 
-			image_color:spring(get_themed_property(window, "TabIcon", "DeselectedImageColor3"), springs.fast_soft)
-			label_color:spring(get_themed_property(window, "TabLabel", "DeselectedTextColor3"), springs.fast_soft)
+			image_color:spring(get_themed_property(window, "TabIcon", "DeselectedImageColor3"), springs.soft)
+			label_color:spring(get_themed_property(window, "TabLabel", "DeselectedTextColor3"), springs.soft)
 		end
 	end
 
