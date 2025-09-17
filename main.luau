@@ -4484,14 +4484,16 @@ local function window_new(self: Library, props: WindowProps): Window
 		if not name then
 			return
 		end
-		print("hi")
+		print("test")
 
 		ensure_folder(dir)
 		ensure_folder(config_directory)
+		print("test 2")
 		
 		local content = encode_config(self.Flags)
+		print("test 3", content)
 		writefile(`{config_directory}/{name}.config`, content)
-
+		print("saved")
 		return content
 	end
 	
