@@ -1630,8 +1630,6 @@ local function ELEMENT_FLAG<Props>(element: Element, section: Section, props: Pr
 	local existing_flag = flags[flag_name]
 	assert(not existing_flag, `a flag with the name {flag_name} already exists`)
 
-	print(flag_name)
-
 	flags[flag_name] = element
 end
 
@@ -4608,7 +4606,6 @@ local function window_new(self: Library, props: WindowProps): Window
 	end
 
 	local themes_dir = `{dir}/themes`
-	print("github sucks")
 
 	local function window_load_themes(window: Window): { [string]: ThemeData }
 		ensure_folder(dir)
