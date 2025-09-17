@@ -4484,6 +4484,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		if not name then
 			return
 		end
+		print("hi")
 
 		ensure_folder(dir)
 		ensure_folder(config_directory)
