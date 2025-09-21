@@ -1292,7 +1292,7 @@ do
 				local b = math.round(value.B * 255)
 				buffer.writeu8(buf, cursor, r)
 				buffer.writeu8(buf, cursor + 1, g)
-				buffer.writeu8(buf, cursor + 3, b)
+				buffer.writeu8(buf, cursor + 2, b)
 				return nil
 			end,
 			len = 3,
