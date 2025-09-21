@@ -918,6 +918,8 @@ export type Dropdown = {
 	Toggle: (self: Dropdown) -> (),
 	IsOpen: boolean,
 
+	SetItems: (self: Dropdown, items: { string }) -> (),
+
 	items: { string },
 
 	window: Window,
@@ -1376,7 +1378,7 @@ do
 			local value_src = element.Value
 			if not value_src then continue end
 			local value = value_src:get()
-			
+
 			local type = typeof(value)
 			len += 2 + #name + (DATATYPES[type].len or 10) + 1
 		end
@@ -1978,6 +1980,8 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			button(item, order).Parent = dropdown_scroll
 		end
 	end
+
+	dropdown.SetItems = dropdown_set_items
 
 	local function dropdown_open(self: Dropdown)
 		open:set(true)
