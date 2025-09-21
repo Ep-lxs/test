@@ -1373,7 +1373,10 @@ do
 	encode_config = function(flags: { [string]: Element }): string
 		local len = 0
 		for name, element in flags do
-			local value = (element :: any).Value:get()
+			local value_src = element.Value
+			if not value_src then continue end
+			local value = value_src:get()
+			
 			local type = typeof(value)
 			len += 2 + #name + (DATATYPES[type].len or 10) + 1
 		end
