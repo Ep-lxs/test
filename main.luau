@@ -4780,7 +4780,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 8),
 			PaddingLeft = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 4),
+			PaddingRight = UDim.new(0, 8),
 			PaddingTop = UDim.new(0, 8),
 		},
 	} :: Frame
