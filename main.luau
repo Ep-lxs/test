@@ -1981,8 +1981,6 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		end
 	end
 
-	dropdown.SetItems = dropdown_set_items
-
 	local function dropdown_open(self: Dropdown)
 		open:set(true)
 	end
@@ -2004,6 +2002,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 
 		title = title,
 
+		SetItems = dropdown_set_items,
 		items = items,
 
 		callbacks = callbacks,
@@ -2049,18 +2048,18 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		TextTransparency = section.content_transparency,
 		theme_tag = "Box",
 
-		Activated = function()
-			dropdown_toggle(dropdown :: any)
-		end,
-
 		create "UICorner" {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 5), --boxcorner
 		},
 
 		create "UIPadding" {
 			PaddingLeft = UDim.new(0, 6),
 			PaddingRight = UDim.new(0, 6),
 		},
+		
+		Activated = function()
+			dropdown_toggle(dropdown :: any)
+		end,
 	} :: TextButton
 
 	local instance = create "Frame" {
@@ -2079,8 +2078,8 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
-			PaddingLeft = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 10),
+			PaddingRight = UDim.new(0, 6),
 			PaddingTop = UDim.new(0, 6),
 		},
 
@@ -2436,7 +2435,7 @@ local function color_picker_new(section: Section, props: ColorPickerProps): Colo
 		theme_tag = "Box",
 
 		create "UICorner" {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 5), --boxcorner
 		},
 
 		create "UIPadding" {
@@ -2464,7 +2463,7 @@ local function color_picker_new(section: Section, props: ColorPickerProps): Colo
 		theme_tag = "Box",
 
 		create "UICorner" {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 5), --boxcorner
 		},
 
 		create "UIPadding" {
@@ -2492,7 +2491,7 @@ local function color_picker_new(section: Section, props: ColorPickerProps): Colo
 		theme_tag = "Box",
 
 		create "UICorner" {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 5), --boxcorner
 		},
 
 		create "UIPadding" {
@@ -2546,11 +2545,11 @@ local function color_picker_new(section: Section, props: ColorPickerProps): Colo
 			CornerRadius = UDim.new(0, 6),
 			theme_tag = "ElementCorner",
 		},
-
+		
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
-			PaddingLeft = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 10),
+			PaddingRight = UDim.new(0, 6),
 			PaddingTop = UDim.new(0, 6),
 		},
 
@@ -2702,7 +2701,7 @@ local function range_slider_new(section: Section, props: RangeSliderProps): Rang
 		theme_tag = "Box",
 
 		create "UICorner" {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 5), --boxcorner
 		},
 
 		create "UIPadding" {
@@ -2742,7 +2741,7 @@ local function range_slider_new(section: Section, props: RangeSliderProps): Rang
 		theme_tag = "Box",
 
 		create "UICorner" {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 5), --boxcorner
 		},
 
 		create "UIPadding" {
@@ -2953,8 +2952,8 @@ local function range_slider_new(section: Section, props: RangeSliderProps): Rang
 
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
-			PaddingLeft = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 10),
+			PaddingRight = UDim.new(0, 6),
 			PaddingTop = UDim.new(0, 6),
 		},
 
@@ -3088,19 +3087,20 @@ local function keybind_new(section: Section, props: KeybindProps): Keybind
 		TextSize = 13,
 		TextWrapped = false,
 		theme_tag = "Box",
-
-		Activated = function()
-			take_input()
-		end,
-
+		
 		create "UICorner" {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 5), --boxcorner
 		},
 
 		create "UIPadding" {
 			PaddingLeft = UDim.new(0, 7),
 			PaddingRight = UDim.new(0, 7),
 		},
+		
+		Activated = function()
+			take_input()
+		end,
+
 	} :: TextButton
 
 	local instance = create "Frame" {
@@ -3143,8 +3143,8 @@ local function keybind_new(section: Section, props: KeybindProps): Keybind
 
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
-			PaddingLeft = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 10),
+			PaddingRight = UDim.new(0, 6),
 			PaddingTop = UDim.new(0, 6),
 		},
 
@@ -3349,7 +3349,7 @@ local function slider_new(section: Section, props: SliderProps): Slider
 		theme_tag = "Box",
 
 		create "UICorner" {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 5), --boxcorner
 		},
 
 		create "UIPadding" {
@@ -3385,8 +3385,8 @@ local function slider_new(section: Section, props: SliderProps): Slider
 
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
-			PaddingLeft = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 10),
+			PaddingRight = UDim.new(0, 6),
 			PaddingTop = UDim.new(0, 6),
 		},
 
@@ -3647,11 +3647,11 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 			CornerRadius = UDim.new(0, 6),
 			theme_tag = "ElementCorner",
 		},
-
+		
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
-			PaddingLeft = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 10),
+			PaddingRight = UDim.new(0, 6),
 			PaddingTop = UDim.new(0, 6),
 		},
 
@@ -3822,8 +3822,8 @@ local function button_new(section: Section, props: ButtonProps): Button
 
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
-			PaddingLeft = UDim.new(0, 8),
-			PaddingRight = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 10),
+			PaddingRight = UDim.new(0, 6),
 			PaddingTop = UDim.new(0, 6),
 		},
 
@@ -4003,7 +4003,7 @@ local function input_new(section: Section, props: InputProps): Input
 
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
-			PaddingLeft = UDim.new(0, 8),
+			PaddingLeft = UDim.new(0, 10),
 			PaddingRight = UDim.new(0, 6),
 			PaddingTop = UDim.new(0, 6),
 		},
@@ -4378,7 +4378,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	local body_transparency = motion(1)
 	local container_transparency = motion(1)
 	local stroke_transparency = motion(1)
-	
+
 	local function window_minimize(self: Window)
 		if self.Minimized then
 			return
@@ -4386,12 +4386,12 @@ local function window_new(self: Library, props: WindowProps): Window
 
 		self.Minimized = true
 		--self.container.Visible = false
-		
+
 		position:spring(self.container.Position + UDim2.fromOffset(0, 30), springs.soft)
 		body_transparency:spring(1, springs.fast_soft)
 		container_transparency:spring(1, springs.fast_soft)
 		stroke_transparency:spring(0.999, springs.fast_soft)
-		
+
 		for _, element in self.Flags do
 			if element.kind == "dropdown" then
 				element:Close()
@@ -4496,14 +4496,14 @@ local function window_new(self: Library, props: WindowProps): Window
 		ensure_folder(dir)
 		ensure_folder(config_directory)
 		print("test 2")
-		
+
 		local content = encode_config(self.Flags)
 		print("test 3", content)
 		writefile(`{config_directory}/{name}.config`, content)
 		print("saved")
 		return content
 	end
-	
+
 	local function window_create_config(self: Window, name: string, flags)
 		if not name or not flags then
 			return
@@ -4519,17 +4519,17 @@ local function window_new(self: Library, props: WindowProps): Window
 	local function window_get_config(self: Window, name: string) -- name always inputted, it can be 'default' for some.
 		ensure_folder(dir)
 		ensure_folder(config_directory)
-		
+
 		if not isfile(`{config_directory}/{name}.config`) then
 			return
 		end
 
 		local config = decode_config(readfile(`{config_directory}/{name}.config`))
-		
+
 		if not config then
 			return
 		end 
-			
+
 		return config
 	end
 
@@ -4927,7 +4927,7 @@ local function window_new(self: Library, props: WindowProps): Window
 					AnchorPoint = Vector2.new(1, 0),
 					AutoButtonColor = false,
 					BackgroundColor3 = Color3.new(),
-					BackgroundTransparency = element_bg_transparency,
+					BackgroundTransparency = 1,
 					FontFace = fonts.builder_sans.semibold,
 					Position = UDim2.fromScale(1, 0),
 					Size = UDim2.new(0.5, -2, 1, 0),
@@ -4936,7 +4936,6 @@ local function window_new(self: Library, props: WindowProps): Window
 					TextSize = 13,
 					TextWrapped = true,
 					TextTransparency = element_text_transparency,
-					theme_tag = "DialogueCancel",
 
 					Activated = function() exit_dialogue_visible:set(false) end,
 
@@ -5137,7 +5136,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	window.sidebar = sidebar
 	window.content_container = content_container
 	window.container = container
-	
+
 	table.insert(registry.windows, window)
 	active_window = nil
 
@@ -5151,7 +5150,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	if theme then
 		window_load_theme(window :: Window, theme)
 	end
-	
+
 	body_transparency:spring(0, springs.fast_soft)
 	container_transparency:spring(get_themed_property(window :: Window, "WindowShadow", "ImageTransparency"), springs.fast_soft)
 	stroke_transparency:spring(get_themed_property(window :: Window, "WindowStroke", "Transparency"), springs.fast_soft)
