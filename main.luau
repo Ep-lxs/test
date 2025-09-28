@@ -4,6 +4,7 @@ local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local GuiService = game:GetService("GuiService")
 
 type Cleanup = () -> ()
 
@@ -1454,6 +1455,7 @@ local function window_apply_theme(window: Window)
 end
 
 local springs = {
+	super_soft = { tension = 60, friction = 22 },
 	soft = { tension = 120, friction = 22 },
 	soft_bounce = { tension = 160, friction = 14 },
 	meow_bounce = { tension = 175, friction = 13 },
@@ -1508,6 +1510,16 @@ local function source<V>(value: V): Source<V>
 		listen = source_listen,
 		fire_listeners = fire_listeners,
 	}
+end
+
+local function clamped_motion(motion: Motion<number>, min: number, max: number): Source<number>
+	local value = source(math.clamp(motion:get(), min, max))
+
+	motion:onStep(function(value2)
+		value:set(math.clamp(value2, min, max))
+	end)
+
+	return value
 end
 
 local function computed<A, B>(src: Source<A>, fn: (A) -> B): Source<B>
@@ -1648,6 +1660,7 @@ local function ensure_gui(): ScreenGui
 
 	local gui = Instance.new("ScreenGui")
 	gui.Name = "Library_container"
+	gui.IgnoreGuiInset = true
 	gui.DisplayOrder = 1000
 	gui.ResetOnSpawn = false
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -1699,6 +1712,7 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 	local duration = props.Duration or 5
 	local bg_transparency = motion(1)
 	local stroke_transparency = motion(1)
+	local clamped_stroke_transparency = clamped_motion(stroke_transparency, 0, 1)
 	local title_text_transparency = motion(1)
 	local content_text_transparency = motion(1)
 	local position = motion(UDim2.fromScale(1, 0))
@@ -1818,7 +1832,7 @@ local function notification_new(window: Window, props: NotificationProps): Notif
 		create "UIStroke" {
 			Color = Color3.new(1, 1, 1),
 			Thickness = 1.2,
-			Transparency = stroke_transparency,
+			Transparency = clamped_stroke_transparency,
 			theme_tag = "WindowStroke",
 		},
 	} :: Frame
@@ -2056,7 +2070,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			PaddingLeft = UDim.new(0, 6),
 			PaddingRight = UDim.new(0, 6),
 		},
-		
+
 		Activated = function()
 			dropdown_toggle(dropdown :: any)
 		end,
@@ -2545,7 +2559,7 @@ local function color_picker_new(section: Section, props: ColorPickerProps): Colo
 			CornerRadius = UDim.new(0, 6),
 			theme_tag = "ElementCorner",
 		},
-		
+
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 10),
@@ -3087,7 +3101,7 @@ local function keybind_new(section: Section, props: KeybindProps): Keybind
 		TextSize = 13,
 		TextWrapped = false,
 		theme_tag = "Box",
-		
+
 		create "UICorner" {
 			CornerRadius = UDim.new(0, 5), --boxcorner
 		},
@@ -3096,7 +3110,7 @@ local function keybind_new(section: Section, props: KeybindProps): Keybind
 			PaddingLeft = UDim.new(0, 7),
 			PaddingRight = UDim.new(0, 7),
 		},
-		
+
 		Activated = function()
 			take_input()
 		end,
@@ -3647,7 +3661,7 @@ local function toggle_new(section: Section, props: ToggleProps): Toggle
 			CornerRadius = UDim.new(0, 6),
 			theme_tag = "ElementCorner",
 		},
-		
+
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 6),
 			PaddingLeft = UDim.new(0, 10),
@@ -4238,6 +4252,7 @@ local function tab_new(window: Window, props: TabProps): Tab
 
 	local bg_transparency = motion(1)
 	local stroke_transparency = motion(1)
+	local clamped_stroke_transparency = clamped_motion(stroke_transparency, 0, 1)
 	local label_color = motion(get_themed_property(window, "TabLabel", "DeselectedTextColor3"))
 	local image_color = motion(get_themed_property(window, "TabIcon", "DeselectedImageColor3"))
 
@@ -4291,7 +4306,7 @@ local function tab_new(window: Window, props: TabProps): Tab
 
 		create "UIStroke" {
 			Color = Color3.new(15, 16, 17),
-			Transparency = stroke_transparency,
+			Transparency = clamped_stroke_transparency,
 			theme_tag = "TabStroke",
 		},
 
@@ -4832,7 +4847,7 @@ local function window_new(self: Library, props: WindowProps): Window
 
 	local exit_dialogue = create "Frame" {
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		BackgroundColor3 = Color3.new(),
+		BackgroundColor3 = Color3.fromRGB(3, 3, 3),
 		BackgroundTransparency = exit_bg_transparency,
 		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.new(1, -30, 1, -30),
@@ -4946,6 +4961,65 @@ local function window_new(self: Library, props: WindowProps): Window
 			},
 		},
 	} :: Frame
+	
+	local loading_transparency = motion(1)
+	local loading_scale = motion(0.9)
+
+	local loading = create "CanvasGroup" {
+		Name = "Loading",
+		GroupTransparency = loading_transparency,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundTransparency = 1,
+		ClipsDescendants = true,
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = 0,
+
+		create "UIListLayout" {
+			Name = "UIListLayout",
+			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+		},
+
+		create "ImageLabel" {
+			Name = "ImageLabel",
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			BackgroundTransparency = 1,
+			Image = "rbxassetid://117595184971905",
+			ImageColor3 = Color3.fromRGB(254, 160, 248),
+			ImageTransparency = 0.7,
+			ScaleType = Enum.ScaleType.Fit,
+			Size = UDim2.fromOffset(80, 80),
+			SizeConstraint = Enum.SizeConstraint.RelativeYY,
+
+			create "ImageLabel" {
+				Name = "ImageLabel",
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundTransparency = 1,
+				Image = "rbxassetid://117997855532783",
+				Position = UDim2.fromScale(0.5, 0.5),
+				ScaleType = Enum.ScaleType.Fit,
+				Size = UDim2.fromOffset(60, 60),
+				SizeConstraint = Enum.SizeConstraint.RelativeYY,
+			},
+		},
+		
+		create "UIScale" {
+			Scale = loading_scale,
+		}
+	} :: CanvasGroup
+	
+	local close_transparency = motion(1)
+	local clamped_close_transparency = clamped_motion(close_transparency, 0, 1)
+	local minimize_transparency = motion(1)
+	local clamped_minimize_transparency = clamped_motion(minimize_transparency, 0, 1)
+
+	local function handle_state_change(obj: string, state: string)
+		local transparency: Motion<number> = if obj == "minimize" then minimize_transparency else close_transparency 
+		
+		transparency:spring(if state == "hover" then 0 else 1, springs.fast_soft)
+	end
 
 	local size = UDim2.fromOffset(622, 416)
 
@@ -4962,7 +5036,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		stop_drag()
 
 		local container_pos = container.AbsolutePosition + container.AbsoluteSize / 2
-		local drag_offset = UserInputService:GetMouseLocation() - container_pos
+		local drag_offset = UserInputService:GetMouseLocation() - container_pos - Vector2.new(0, GuiService.TopbarInset.Height)
 		drag_connection = RunService.PreRender:Connect(function()
 			local mouse_location = UserInputService:GetMouseLocation()
 
@@ -4990,6 +5064,8 @@ local function window_new(self: Library, props: WindowProps): Window
 		theme_tag = "WindowShadow",
 
 		exit_dialogue,
+		
+		loading,
 
 		-- container
 		create "CanvasGroup" {
@@ -5084,33 +5160,88 @@ local function window_new(self: Library, props: WindowProps): Window
 					theme_tag = "TopbarLine",
 				},
 
-				-- close
-				create "ImageButton" {
+				create "TextButton" {
 					AnchorPoint = Vector2.new(1, 0.5),
-					BackgroundTransparency = 1,
-					Image = "rbxassetid://10747384394",
-					ImageColor3 = Color3.fromRGB(235, 235, 235),
-					Position = UDim2.new(1, -12, 0.5, 0),
-					ScaleType = Enum.ScaleType.Fit,
-					Size = UDim2.fromOffset(16, 16),
-					theme_tag = "TopbarIcon",
+					AutoButtonColor = false,
+					BackgroundTransparency = clamped_close_transparency,
+					BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+					Position = UDim2.new(1, -8, 0.5, 0),
+					Size = UDim2.fromOffset(20, 20),
+					Text = "",
+					theme_tag = "Tab",
 
+					create "UICorner" {
+						Name = "UICorner",
+						CornerRadius = UDim.new(0, 5),
+					},
+
+					create "ImageLabel" {
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						BackgroundTransparency = 1,
+						Image = "rbxassetid://10747384394",
+						ImageColor3 = Color3.fromRGB(235, 235, 235),
+						Position = UDim2.fromScale(0.5, 0.5),
+						ScaleType = Enum.ScaleType.Fit,
+						Size = UDim2.fromOffset(15, 15),
+						theme_tag = "TopbarIcon",
+					},
+
+					create "UIStroke" {
+						ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+						Color = Color3.fromRGB(15, 16, 17),
+						Transparency = clamped_close_transparency,
+					},
+
+					MouseEnter = function()
+						handle_state_change("close", "hover")
+					end,
+					MouseLeave = function()
+						handle_state_change("close", "leave")
+					end,
+					
 					Activated = function()
 						exit_dialogue_visible:set(true)
 					end,
 				},
 
 				-- minimize
-				create "ImageButton" {
+				create "TextButton" {
 					AnchorPoint = Vector2.new(1, 0.5),
-					BackgroundTransparency = 1,
-					Image = "rbxassetid://10734896206",
-					ImageColor3 = Color3.fromRGB(235, 235, 235),
-					Position = UDim2.new(1, -34, 0.5, 0),
-					ScaleType = Enum.ScaleType.Fit,
-					Size = UDim2.fromOffset(16, 16),
-					theme_tag = "TopbarIcon",
+					AutoButtonColor = false,
+					BackgroundTransparency = clamped_minimize_transparency,
+					Position = UDim2.new(1, -32, 0.5, 0),
+					Size = UDim2.fromOffset(20, 20),
+					Text = "",
+					theme_tag = "Tab",
 
+					create "UICorner" {
+						CornerRadius = UDim.new(0, 5),
+					},
+
+					create "ImageLabel" {
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						BackgroundTransparency = 1,
+						Image = "rbxassetid://10734896206",
+						ImageColor3 = Color3.fromRGB(235, 235, 235),
+						Position = UDim2.fromScale(0.5, 0.5),
+						ScaleType = Enum.ScaleType.Fit,
+						Size = UDim2.fromOffset(15, 15),
+						theme_tag = "TopbarIcon",
+					},
+
+					create "UIStroke" {
+						ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+						Color = Color3.fromRGB(15, 16, 17),
+						Transparency = clamped_minimize_transparency,
+					},
+
+					MouseEnter = function()
+						handle_state_change("minimize", "hover")
+					end,
+					MouseLeave = function()
+						handle_state_change("minimize", "leave")
+					end,
+					
 					Activated = function()
 						notification_new(window :: Window, {
 							Title = "Minimized",
@@ -5119,7 +5250,7 @@ local function window_new(self: Library, props: WindowProps): Window
 						window_minimize(window :: Window)
 					end,
 				},
-
+				
 				create "ImageLabel" {
 					AnchorPoint = Vector2.new(0, 0.5),
 					BackgroundTransparency = 1,
@@ -5150,10 +5281,20 @@ local function window_new(self: Library, props: WindowProps): Window
 	if theme then
 		window_load_theme(window :: Window, theme)
 	end
-
+	
+	loading_transparency:spring(0, springs.super_soft)
+	loading_scale:spring(1, springs.soft)
+	
+	task.wait(1.8)
+	
 	body_transparency:spring(0, springs.fast_soft)
 	container_transparency:spring(get_themed_property(window :: Window, "WindowShadow", "ImageTransparency"), springs.fast_soft)
 	stroke_transparency:spring(get_themed_property(window :: Window, "WindowStroke", "Transparency"), springs.fast_soft)
+	
+	repeat task.wait() until body_transparency:isComplete()
+	
+	task.wait(0.4)
+	loading:Destroy()
 
 	return window
 end
