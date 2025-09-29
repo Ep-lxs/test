@@ -4963,7 +4963,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	} :: Frame
 	
 	local loading_transparency = motion(1)
-	local loading_scale = motion(0.9)
+	local loading_scale = motion(0.93)
 
 	local loading = create "CanvasGroup" {
 		Name = "Loading",
