@@ -986,7 +986,7 @@ local DEFAULT_THEMES = {
 			BackgroundTransparency = 0,
 		},
 		TopbarIcon = {
-			ImageColor3 = Color3.fromRGB(235, 235, 235)
+			ImageColor3 = Color3.fromRGB(255, 255, 255)
 		},
 		TopbarTitle = {
 			TextColor3 = Color3.fromRGB(235, 235, 235)
@@ -1095,7 +1095,136 @@ local DEFAULT_THEMES = {
 			CornerRadius = UDim2.new(0,6)
 		},
 	},
+	Light = {
+		Primary = {TextColor3 = Color3.fromRGB(36, 35, 35),},
+		Secondary = {TextColor3 = Color3.fromRGB(121, 119, 118),},
 
+		WindowShadow = {
+			ImageColor3 = Color3.fromRGB(0, 0, 0),
+			ImageTransparency = 0.7,
+		},
+		WindowStroke = {
+			Color = Color3.fromRGB(255, 255, 255),
+			Thickness = 1.2,
+			Transparency = 0.95,
+		},
+		WindowCorner = {
+			CornerRadius = UDim.new(0, 12)
+		},
+
+		Topbar = {
+			BackgroundColor3 = Color3.fromRGB(246, 241, 240),
+			BackgroundTransparency = 0,
+		},
+		TopbarIcon = {
+			ImageColor3 = Color3.fromRGB(36, 35, 35)
+		},
+		TopbarTitle = {
+			TextColor3 = Color3.fromRGB(36, 35, 35)
+		},
+
+		Sidebar = {
+			BackgroundColor3 = Color3.fromRGB(246, 241, 240),
+			BackgroundTransparency = 0,
+		},
+		ContentContainer = {
+			BackgroundColor3 = Color3.fromRGB(246, 241, 240),
+			BackgroundTransparency = 0,
+		},  
+
+		Box = {
+			BackgroundColor3 = Color3.fromRGB(230, 225, 224),
+			BackgroundTransparency = 0,
+			TextColor3 = Color3.fromRGB(121, 119, 118),
+		},
+
+		Element = {
+			BackgroundColor3 = Color3.fromRGB(242, 237, 236),
+			BackgroundTransparency = 0,
+		},
+		ElementStroke = {
+			Color = Color3.fromRGB(229, 224, 223),
+			Transparency = 0,
+		},
+		ElementCorner = {
+			CornerRadius = UDim.new(0, 6)
+		},
+
+		InputBox = {
+			BackgroundColor3 = Color3.fromRGB(230, 225, 224),
+			TextColor3 = Color3.fromRGB(121, 119, 118),
+			PlaceholderColor3 = Color3.fromRGB(70, 70, 70),
+		},
+
+		DropdownChoice = {
+			SelectedBackgroundColor3 = Color3.fromRGB(230, 225, 224),
+			SelectedTextColor3 = Color3.fromRGB(121, 119, 118),
+			SelectedBackgroundTransparency = 0,
+			SelectedTextTransparency = 0,
+
+			DeselectedBackgroundColor3 = Color3.fromRGB(230, 225, 224),
+			DeselectedTextColor3 = Color3.fromRGB(121, 119, 118),
+			DeselectedBackgroundTransparency = 1,
+			DeselectedTextTransparency = 0,
+		},
+
+		SliderThumb = {
+			ImageColor3 = Color3.fromRGB(253, 158, 247),
+			ImageTransparency = 0,
+			BackgroundTransparency = 1,
+		},
+		SliderBar = {
+			BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+			BackgroundTransparency = 0,
+		},
+		SliderBarFill = {
+			BackgroundColor3 = Color3.fromRGB(127, 79, 124),
+			BackgroundTransparency = 0,
+		},
+
+		ToggleStroke = {
+			EnabledColor = Color3.fromRGB(253, 158, 247),
+			DisabledColor = Color3.fromRGB(229, 224, 223),
+			Transparency = 0.25,
+		},
+		ToggleThumb = {
+			EnabledColor = Color3.fromRGB(253, 158, 247),
+			DisabledColor = Color3.fromRGB(229, 224, 223),
+		},
+
+		Divider = {
+			BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+			BackgroundTransparency = 0,
+		},
+		TopbarLine = {
+			BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+			BackgroundTransparency = 0,
+		},
+
+		SectionCorner = {
+			CornerRadius = UDim2.new(0, 6)
+		},
+
+		Tab = {
+			BackgroundColor3 = Color3.fromRGB(242, 237, 236),
+			SelectedBackgroundTransparency = 0,
+			DeselectedBackgroundTransparency = 1,
+		},
+		TabStroke = {
+			Color = Color3.fromRGB(229, 224, 223),
+		},
+		TabIcon = {
+			SelectedImageColor3 = Color3.fromRGB(253, 158, 247),
+			DeselectedImageColor3 = Color3.fromRGB(200, 200, 200),
+		},
+		TabLabel = {
+			SelectedTextColor3 = Color3.fromRGB(253, 158, 247),
+			DeselectedTextColor3 = Color3.fromRGB(36, 35, 35),
+		},
+		TabCorner = {
+			CornerRadius = UDim2.new(0,6)
+		},
+	},
 }
 
 registry = {
@@ -1188,7 +1317,7 @@ if RunService:IsStudio() then
 			end
 			file = (file :: any):FindFirstChild(split[i])
 		end
-		return if file and file:IsA("StringValue") then file.Value else nil
+		return if file and file:IsA("StringValue") then HttpService:JSONDecode(file.Value) else nil
 	end
 
 	listfiles = function(path: string): { string }
@@ -4368,7 +4497,7 @@ local function tab_new(window: Window, props: TabProps): Tab
 		create "UIPadding" {
 			PaddingBottom = UDim.new(0, 1),
 			PaddingLeft = UDim.new(0, 1),
-			PaddingRight = UDim.new(0, 1),
+			PaddingRight = UDim.new(0, 2),
 			PaddingTop = UDim.new(0, 1),
 		},
 	} :: ScrollingFrame
@@ -4961,7 +5090,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			},
 		},
 	} :: Frame
-	
+
 	local loading_transparency = motion(1)
 	local loading_scale = motion(0.93)
 
@@ -5004,12 +5133,12 @@ local function window_new(self: Library, props: WindowProps): Window
 				SizeConstraint = Enum.SizeConstraint.RelativeYY,
 			},
 		},
-		
+
 		create "UIScale" {
 			Scale = loading_scale,
 		}
 	} :: CanvasGroup
-	
+
 	local close_transparency = motion(1)
 	local clamped_close_transparency = clamped_motion(close_transparency, 0, 1)
 	local minimize_transparency = motion(1)
@@ -5017,7 +5146,7 @@ local function window_new(self: Library, props: WindowProps): Window
 
 	local function handle_state_change(obj: string, state: string)
 		local transparency: Motion<number> = if obj == "minimize" then minimize_transparency else close_transparency 
-		
+
 		transparency:spring(if state == "hover" then 0 else 1, springs.fast_soft)
 	end
 
@@ -5064,7 +5193,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		theme_tag = "WindowShadow",
 
 		exit_dialogue,
-		
+
 		loading,
 
 		-- container
@@ -5190,6 +5319,7 @@ local function window_new(self: Library, props: WindowProps): Window
 						ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 						Color = Color3.fromRGB(15, 16, 17),
 						Transparency = clamped_close_transparency,
+						theme_tag = "TabStroke"
 					},
 
 					MouseEnter = function()
@@ -5198,7 +5328,7 @@ local function window_new(self: Library, props: WindowProps): Window
 					MouseLeave = function()
 						handle_state_change("close", "leave")
 					end,
-					
+
 					Activated = function()
 						exit_dialogue_visible:set(true)
 					end,
@@ -5233,6 +5363,7 @@ local function window_new(self: Library, props: WindowProps): Window
 						ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 						Color = Color3.fromRGB(15, 16, 17),
 						Transparency = clamped_minimize_transparency,
+						theme_tag = "TabStroke"
 					},
 
 					MouseEnter = function()
@@ -5241,7 +5372,7 @@ local function window_new(self: Library, props: WindowProps): Window
 					MouseLeave = function()
 						handle_state_change("minimize", "leave")
 					end,
-					
+
 					Activated = function()
 						notification_new(window :: Window, {
 							Title = "Minimized",
@@ -5250,7 +5381,7 @@ local function window_new(self: Library, props: WindowProps): Window
 						window_minimize(window :: Window)
 					end,
 				},
-				
+
 				create "ImageLabel" {
 					AnchorPoint = Vector2.new(0, 0.5),
 					BackgroundTransparency = 1,
@@ -5281,18 +5412,18 @@ local function window_new(self: Library, props: WindowProps): Window
 	if theme then
 		window_load_theme(window :: Window, theme)
 	end
-	
+
 	loading_transparency:spring(0, springs.super_soft)
 	loading_scale:spring(1, springs.soft)
-	
+
 	task.wait(1.8)
-	
+
 	body_transparency:spring(0, springs.fast_soft)
 	container_transparency:spring(get_themed_property(window :: Window, "WindowShadow", "ImageTransparency"), springs.fast_soft)
 	stroke_transparency:spring(get_themed_property(window :: Window, "WindowStroke", "Transparency"), springs.fast_soft)
-	
+
 	repeat task.wait() until body_transparency:isComplete()
-	
+
 	task.wait(0.4)
 	loading:Destroy()
 
