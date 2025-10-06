@@ -1503,7 +1503,6 @@ do
 	end
 
 	encode_config = function(flags: { [string]: Element }): string
-		print("encode begin")
 		local len = 0
 		for name, element in flags do
 			local value_src = element.Value
@@ -1520,7 +1519,7 @@ do
 		for name, element in flags do
 			local value_src = element.Value
 			if not value_src then continue end
-			
+
 			-- write name
 			local name_len = #name
 			realloc(2 + name_len)
@@ -4644,6 +4643,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		ensure_folder(config_directory)
 
 		local content = encode_config(self.Flags)
+		print("saved")
 		writefile(`{config_directory}/{name}.config`, content)
 		return content
 	end
@@ -4657,6 +4657,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		ensure_folder(config_directory)
 
 		local content = encode_config(flags)
+		print("created")
 		writefile(`{config_directory}/{name}.config`, content)
 	end
 
