@@ -1503,6 +1503,7 @@ do
 	end
 
 	encode_config = function(flags: { [string]: Element }): string
+		print("encode begin")
 		local len = 0
 		for name, element in flags do
 			local value_src = element.Value
@@ -1517,6 +1518,9 @@ do
 		buf = buffer.create(len)
 
 		for name, element in flags do
+			local value_src = element.Value
+			if not value_src then continue end
+			
 			-- write name
 			local name_len = #name
 			realloc(2 + name_len)
@@ -1524,7 +1528,7 @@ do
 			buffer.writestring(buf, cursor + 2, name)
 			cursor += 2 + name_len
 
-			local value = (element :: any).Value:get()
+			local value = value_src:get()
 			local type = typeof(value)
 			local datatype = DATATYPES[type] :: ConfigDatatype<any>
 
@@ -4635,16 +4639,12 @@ local function window_new(self: Library, props: WindowProps): Window
 		if not name then
 			return
 		end
-		print("test")
 
 		ensure_folder(dir)
 		ensure_folder(config_directory)
-		print("test 2")
 
 		local content = encode_config(self.Flags)
-		print("test 3", content)
 		writefile(`{config_directory}/{name}.config`, content)
-		print("saved")
 		return content
 	end
 
