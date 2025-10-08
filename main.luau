@@ -4735,7 +4735,13 @@ local function window_new(self: Library, props: WindowProps): Window
 			if not content then
 				continue
 			end
-			configs[file_name] = content
+
+			local config_name = string.match(theme_file, "([^/\\]+)%.%w+$")
+			if not config_name then 
+				continue
+			end
+
+			configs[config_name] = content
 		end
 		return configs
 	end
