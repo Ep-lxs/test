@@ -1355,7 +1355,7 @@ do
 	local function hex_to_string(hex: string): string
 		local len = #hex
 		local s = table.create(len // 2)
-		for i = 1, len do
+		for i = 1, len // 2 do
 			local byte = tonumber(string.sub(hex, i * 2 - 1, i * 2), 16)
 			if byte then
 				s[i] = string.char(byte)
@@ -1374,11 +1374,14 @@ do
 	local buf
 	local cursor = 0
 
+	-- 🔧 safer realloc function
 	local function realloc(size: number)
 		local len = buffer.len(buf)
-		if len < cursor + size then
-			local new_buf = buffer.create(len + size * 1.5)
-			buffer.copy(new_buf, 0, buf)
+		local required = cursor + size
+		if len < required then
+			local new_len = math.ceil(required * 1.5)
+			local new_buf = buffer.create(new_len)
+			buffer.copy(new_buf, 0, buf, 0, len)
 			buf = new_buf
 		end
 	end
@@ -1389,8 +1392,9 @@ do
 				return buffer.readf64(buf, cursor)
 			end,
 			write = function(buf, cursor, value)
+				realloc(8)
 				buffer.writef64(buf, cursor, value)
-				return nil
+				return 8
 			end,
 			len = 8,
 			type_id = 0,
@@ -1404,10 +1408,11 @@ do
 				return vector.create(x, y, z)
 			end,
 			write = function(buf, cursor, value)
+				realloc(12)
 				buffer.writef32(buf, cursor, value.x)
 				buffer.writef32(buf, cursor + 4, value.y)
 				buffer.writef32(buf, cursor + 8, value.z)
-				return nil
+				return 12
 			end,
 			len = 12,
 			type_id = 1,
@@ -1421,13 +1426,14 @@ do
 				return Color3.fromRGB(r, g, b)
 			end,
 			write = function(buf, cursor, value)
+				realloc(3)
 				local r = math.round(value.R * 255)
 				local g = math.round(value.G * 255)
 				local b = math.round(value.B * 255)
 				buffer.writeu8(buf, cursor, r)
 				buffer.writeu8(buf, cursor + 1, g)
 				buffer.writeu8(buf, cursor + 2, b)
-				return nil
+				return 3
 			end,
 			len = 3,
 			type_id = 2,
@@ -1438,8 +1444,9 @@ do
 				return buffer.readu8(buf, cursor) == 1
 			end,
 			write = function(buf, cursor, value)
-				buffer.writeu8(buf, cursor, if value then 1 else 0)
-				return nil
+				realloc(1)
+				buffer.writeu8(buf, cursor, value and 1 or 0)
+				return 1
 			end,
 			len = 1,
 			type_id = 3,
@@ -1450,8 +1457,9 @@ do
 				return Enum.KeyCode:FromValue(buffer.readu16(buf, cursor)) :: Enum.KeyCode
 			end,
 			write = function(buf, cursor, value)
+				realloc(2)
 				buffer.writeu16(buf, cursor, value.Value)
-				return nil
+				return 2
 			end,
 			len = 2,
 			type_id = 4,
@@ -1460,7 +1468,8 @@ do
 		string = {
 			read = function(buf, cursor)
 				local len = buffer.readu16(buf, cursor)
-				return buffer.readstring(buf, cursor + 2, len), len + 2
+				local str = buffer.readstring(buf, cursor + 2, len)
+				return str, len + 2
 			end,
 			write = function(buf, cursor, value)
 				local len = #value
@@ -1469,7 +1478,7 @@ do
 				buffer.writestring(buf, cursor + 2, value)
 				return len + 2
 			end,
-			len = 2,
+			len = 2, -- base len (excluding actual content)
 			type_id = 5,
 		} :: ConfigDatatype<string>,
 	}
@@ -1479,6 +1488,7 @@ do
 		DATATYPES_TYPE_ID_MAP[datatype.type_id] = datatype
 	end
 
+	-- 🔍 decode
 	decode_config = function(content: string): { [string]: any }
 		buf = buffer.fromstring(hex_to_string(content))
 		cursor = 0
@@ -1492,53 +1502,59 @@ do
 			cursor += 2 + name_len
 
 			local type_id = buffer.readu8(buf, cursor)
-			assert(type_id, `invalid type id {type_id}`)
-
+			cursor += 1
 			local datatype = DATATYPES_TYPE_ID_MAP[type_id]
-			local value, offset = datatype.read(buf, cursor + 1)
-			cursor += 1 + (offset or datatype.len)
+			assert(datatype, `Invalid type id {type_id}`)
 
+			local value, offset = datatype.read(buf, cursor)
+			cursor += offset or datatype.len
 			flags[name] = value
 		end
 
 		return flags
 	end
 
+	-- 💾 encode
 	encode_config = function(flags: { [string]: Element }): string
-		local len = 0
-		for name, element in flags do
-			local value_src = element.Value
-			if not value_src then continue end
-			local value = value_src:get()
-
-			local type = typeof(value)
-			len += 2 + #name + (DATATYPES[type].len or 10) + 1
-		end
-
+		-- start with safe initial buffer, will grow dynamically
+		buf = buffer.create(128)
 		cursor = 0
-		buf = buffer.create(len)
 
 		for name, element in flags do
 			local value_src = element.Value
-			if not value_src then continue end
+			if not value_src then
+				continue
+			end
+
+			local value = value_src:get()
+			local type = typeof(value)
+			local datatype = DATATYPES[type]
+			if not datatype then
+				continue
+			end
+
+			local name_len = #name
+			local estimated_len = 2 + name_len + datatype.len + 1
+			if type == "string" then
+				estimated_len = estimated_len + #value
+			end
+			realloc(estimated_len)
 
 			-- write name
-			local name_len = #name
-			realloc(2 + name_len)
 			buffer.writeu16(buf, cursor, name_len)
 			buffer.writestring(buf, cursor + 2, name)
 			cursor += 2 + name_len
 
-			local value = value_src:get()
-			local type = typeof(value)
-			local datatype = DATATYPES[type] :: ConfigDatatype<any>
-
 			-- write type id
 			buffer.writeu8(buf, cursor, datatype.type_id)
-			local offset = datatype.write(buf, cursor + 1, value) or datatype.len
-			cursor += 1 + offset
+			cursor += 1
+
+			-- write value
+			local offset = datatype.write(buf, cursor, value) or datatype.len
+			cursor += offset
 		end
 
+		-- trim buffer
 		local exact_buf = buffer.create(cursor)
 		buffer.copy(exact_buf, 0, buf, 0, cursor)
 		return string_to_hex(buffer.tostring(exact_buf))
