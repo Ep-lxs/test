@@ -693,6 +693,8 @@ export type Section = {
 	ColorPicker: (self: Section, props: ColorPickerProps) -> ColorPicker,
 	Dropdown: (self: Dropdown, props: DropdownProps) -> Dropdown,
 
+	SetVisibility: (self: Section, visible: boolean) -> (),
+
 	window: Window,
 	tab: Tab,
 
@@ -4238,6 +4240,10 @@ local function section_new(tab: Tab, props: SectionProps): Section
 		RangeSlider = range_slider_new,
 		ColorPicker = color_picker_new,
 		Dropdown = dropdown_new,
+		
+		SetVisibility = function(section, boolean)
+			section.instance.Visible = boolean
+		end,
 
 		window = window,
 		tab = tab,
@@ -4251,7 +4257,7 @@ local function section_new(tab: Tab, props: SectionProps): Section
 		element_bg_transparency = motion(1),
 		element_stroke_transparency = motion(1),
 	}
-
+	
 	local content_transparency = tab.section_transparency
 	section.content_transparency = content_transparency
 
