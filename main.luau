@@ -4736,7 +4736,7 @@ local function window_new(self: Library, props: WindowProps): Window
 				continue
 			end
 
-			local config_name = string.match(theme_file, "([^/\\]+)%.%w+$")
+			local config_name = string.match(file_name, "([^/\\]+)%.%w+$")
 			if not config_name then 
 				continue
 			end
