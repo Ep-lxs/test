@@ -4541,6 +4541,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	local body_transparency = motion(1)
 	local container_transparency = motion(1)
 	local stroke_transparency = motion(1)
+	local clamped_stroke_transparency = clamped_motion(stroke_transparency, 0, 1)
 
 	local function window_minimize(self: Window)
 		if self.Minimized then
@@ -4562,10 +4563,18 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 	end
 
+	stroke_transparency:onComplete(function(value)
+		if value == 1 then
+			self.container.Visible = false
+		end
+	end)
+
 	local function window_maximize(self: Window)	
 		if not self.Minimized then
 			return
 		end
+
+		self.container.Visible = true
 
 		position:spring(self.container.Position - UDim2.fromOffset(0, 30), springs.meow_bounce)
 		body_transparency:spring(0, springs.fast_soft)
@@ -4573,7 +4582,6 @@ local function window_new(self: Library, props: WindowProps): Window
 		stroke_transparency:spring(get_themed_property(self, "WindowStroke", "Transparency"), springs.fast_soft)
 
 		self.Minimized = false
-		--self.container.Visible = true
 	end
 
 	local function window_toggle_minimized(self: Window)
@@ -5242,7 +5250,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			create "UIStroke" {
 				Color = Color3.new(1, 1, 1),
 				Thickness = 1.2,
-				Transparency = stroke_transparency,
+				Transparency = clamped_stroke_transparency,
 				theme_tag = "WindowStroke",
 			},
 
