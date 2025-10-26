@@ -4748,9 +4748,11 @@ local function window_new(self: Library, props: WindowProps): Window
 
 		if not content then
 			-- create default
+			print("creating default", config_name)
 			window_save_config(self, config_name)
 		else
 			-- load default
+			print("loading default", config_name)
 			window_load_config(self, content)
 		end
 	end
