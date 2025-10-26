@@ -4724,6 +4724,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 	end
 
+	print("gurt")
 	local function window_get_configs(self: Window): { [string]: string }
 		ensure_folder(dir)
 		ensure_folder(config_directory)
