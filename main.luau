@@ -2364,7 +2364,6 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 	local divider_transparency = motion(1)
 	local scroll_container = create "Frame" {
 		Active = true,
-		--AnchorPoint = Vector2.new(1, 0.5),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundColor3 = Color3.fromRGB(13, 14, 15),
 		ClipsDescendants = true,
@@ -2464,6 +2463,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		dropdown.IsOpen = open
 		if open then
 			calculate_scroll_size()
+			scroll_container.Interactable = true
 			scroll_container.Visible = true
 			dropdown_size:spring(dropdown_target_size, springs.fast_soft)
 			dropdown_transparency:spring(get_themed_property(window, "ContentContainer", "BackgroundTransparency"), springs.soft)
@@ -2472,6 +2472,8 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			divider_transparency:spring(get_themed_property(window, "Divider", "BackgroundTransparency"), springs.fast_soft)
 		else
 			-- if dropdown is closing, make sure they cant still add text to the search box
+			scroll_container.Interactable = false
+			
 			if search_box:IsFocused() then
 				search_box:ReleaseFocus()
 			end
@@ -2489,7 +2491,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 
 	local function update_scroll_position()
 		local button_position = button.AbsolutePosition
-		local position = UDim2.fromOffset(button_position.X, button_position.Y - 21)
+		local position = UDim2.fromOffset(button_position.X, button_position.Y + GuiService.TopbarInset.Height) -- -21
 		scroll_container.Position = position
 	end
 
@@ -4267,7 +4269,7 @@ local function section_new(tab: Tab, props: SectionProps): Section
 		element_bg_transparency = motion(1),
 		element_stroke_transparency = motion(1),
 	}
-	
+
 	local content_transparency = tab.section_transparency
 	section.content_transparency = content_transparency
 
@@ -5183,7 +5185,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		transparency:spring(if state == "hover" then 0 else 1, springs.fast_soft)
 	end
 
-	local size = UDim2.fromOffset(622, 416)
+	local size = UDim2.fromOffset(552, 416) -- 622 originally on x axis
 
 	local drag_connection: RBXScriptConnection?
 	local function stop_drag()
