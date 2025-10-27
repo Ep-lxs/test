@@ -2799,7 +2799,7 @@ local function range_slider_new(section: Section, props: RangeSliderProps): Rang
 	local max = props.Max
 	local title = props.Title
 
-	local precision = props.Precision or 1
+	local precision = props.Precision or 0.1
 	local function apply_precision(value: number): number
 		local factor = 1 / precision
 		return math.round(value * factor) / factor
@@ -3430,6 +3430,7 @@ local function slider_new(section: Section, props: SliderProps): Slider
 
 	local start_hold, stop_hold
 
+	local slider_thumb_ap = motion(Vector2.new(0, 0.5))
 	local slider_size = motion(UDim2.fromOffset(0, 2))
 
 	local slider_bar = create "Frame" {
@@ -3479,7 +3480,7 @@ local function slider_new(section: Section, props: SliderProps): Slider
 
 			create "ImageButton" {
 				Active = false,
-				AnchorPoint = Vector2.new(1, 0.5),
+				AnchorPoint = slider_thumb_ap,
 				AutoButtonColor = false,
 				BackgroundTransparency = 1,
 				Interactable = false,
@@ -3649,6 +3650,7 @@ local function slider_new(section: Section, props: SliderProps): Slider
 
 		local ratio = (value - min) / (max - min)
 		slider_size:spring(UDim2.new(ratio, 0, 0, 2), springs.fast_soft)
+		slider_thumb_ap:spring(Vector2.new(ratio, 0.5), springs.fast_soft)
 	end)
 
 	table.insert(section.elements, slider)
@@ -4551,25 +4553,23 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 
 		self.Minimized = true
-		--self.container.Visible = false
-
+	
 		position:spring(self.container.Position + UDim2.fromOffset(0, 30), springs.soft)
 		body_transparency:spring(1, springs.fast_soft)
 		container_transparency:spring(1, springs.fast_soft)
-		stroke_transparency:spring(0.999, springs.fast_soft)
+		stroke_transparency:spring(1, springs.fast_soft)
 
 		for _, element in self.Flags do
 			if element.kind == "dropdown" then
 				element:Close()
 			end
 		end
-	end
-
-	stroke_transparency:onComplete(function(value)
-		if value == 1 then
+		
+		repeat task.wait() until body_transparency:isComplete()
+		if body_transparency:get() == 1 then
 			self.container.Visible = false
 		end
-	end)
+	end
 
 	local function window_maximize(self: Window)	
 		if not self.Minimized then
@@ -4585,7 +4585,7 @@ local function window_new(self: Library, props: WindowProps): Window
 
 		self.Minimized = false
 	end
-
+	
 	local function window_toggle_minimized(self: Window)
 		if self.Minimized then
 			self:Maximize()
@@ -5125,7 +5125,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			},
 		},
 	} :: Frame
-
+	
 	local loading_transparency = motion(1)
 	local loading_scale = motion(0.93)
 
@@ -5433,7 +5433,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	window.sidebar = sidebar
 	window.content_container = content_container
 	window.container = container
-
+	
 	table.insert(registry.windows, window)
 	active_window = nil
 
