@@ -977,9 +977,6 @@ local DEFAULT_THEMES = {
 			Thickness = 1.2,
 			Transparency = 0.95,
 		},
-		WindowCorner = {
-			CornerRadius = UDim.new(0, 12)
-		},
 
 		Topbar = {
 			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
@@ -989,7 +986,7 @@ local DEFAULT_THEMES = {
 			ImageColor3 = Color3.fromRGB(255, 255, 255)
 		},
 		TopbarTitle = {
-			TextColor3 = Color3.fromRGB(235, 235, 235)
+			TextColor3 = Color3.fromRGB(253, 158, 247)
 		},
 
 		Sidebar = {
@@ -1015,9 +1012,6 @@ local DEFAULT_THEMES = {
 		ElementStroke = {
 			Color = Color3.fromRGB(15, 16, 17),
 			Transparency = 0,
-		},
-		ElementCorner = {
-			CornerRadius = UDim.new(0, 6)
 		},
 
 		InputBox = {
@@ -1062,17 +1056,9 @@ local DEFAULT_THEMES = {
 			DisabledColor = Color3.fromRGB(235, 235, 235),
 		},
 
-		Divider = {
-			BackgroundColor3 = Color3.fromRGB(38, 39, 40),
+		Line = {
 			BackgroundTransparency = 0,
-		},
-		TopbarLine = {
-			BackgroundColor3 = Color3.fromRGB(38, 39, 40),
-			BackgroundTransparency = 0,
-		},
-
-		SectionCorner = {
-			CornerRadius = UDim2.new(0, 6)
+			BackgroundColor3 = Color3.fromRGB(15, 16, 17),
 		},
 
 		Tab = {
@@ -1091,9 +1077,6 @@ local DEFAULT_THEMES = {
 			SelectedTextColor3 = Color3.fromRGB(253, 158, 247),
 			DeselectedTextColor3 = Color3.fromRGB(200, 200, 200),
 		},
-		TabCorner = {
-			CornerRadius = UDim2.new(0,6)
-		},
 	},
 	Light = {
 		Primary = {TextColor3 = Color3.fromRGB(36, 35, 35),},
@@ -1108,9 +1091,6 @@ local DEFAULT_THEMES = {
 			Thickness = 1.2,
 			Transparency = 0.95,
 		},
-		WindowCorner = {
-			CornerRadius = UDim.new(0, 12)
-		},
 
 		Topbar = {
 			BackgroundColor3 = Color3.fromRGB(246, 241, 240),
@@ -1120,7 +1100,7 @@ local DEFAULT_THEMES = {
 			ImageColor3 = Color3.fromRGB(36, 35, 35)
 		},
 		TopbarTitle = {
-			TextColor3 = Color3.fromRGB(36, 35, 35)
+			TextColor3 = Color3.fromRGB(253, 158, 247)
 		},
 
 		Sidebar = {
@@ -1145,9 +1125,6 @@ local DEFAULT_THEMES = {
 		ElementStroke = {
 			Color = Color3.fromRGB(229, 224, 223),
 			Transparency = 0,
-		},
-		ElementCorner = {
-			CornerRadius = UDim.new(0, 6)
 		},
 
 		InputBox = {
@@ -1192,17 +1169,9 @@ local DEFAULT_THEMES = {
 			DisabledColor = Color3.fromRGB(229, 224, 223),
 		},
 
-		Divider = {
-			BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+		Line = {
 			BackgroundTransparency = 0,
-		},
-		TopbarLine = {
 			BackgroundColor3 = Color3.fromRGB(200, 200, 200),
-			BackgroundTransparency = 0,
-		},
-
-		SectionCorner = {
-			CornerRadius = UDim2.new(0, 6)
 		},
 
 		Tab = {
@@ -1220,9 +1189,6 @@ local DEFAULT_THEMES = {
 		TabLabel = {
 			SelectedTextColor3 = Color3.fromRGB(253, 158, 247),
 			DeselectedTextColor3 = Color3.fromRGB(36, 35, 35),
-		},
-		TabCorner = {
-			CornerRadius = UDim2.new(0,6)
 		},
 	},
 }
@@ -2235,7 +2201,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 
 		create "UICorner" {
 			CornerRadius = UDim.new(0, 6),
-			theme_tag = "ElementCorner",
+			--theme_tag = "ElementCorner",
 		},
 
 		create "UIPadding" {
@@ -2397,7 +2363,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 			BackgroundTransparency = divider_transparency,
 			Position = UDim2.fromOffset(0, 23),
 			Size = UDim2.new(1, 0, 0, 1),
-			theme_tag = "Divider",
+			theme_tag = "Line",
 		},
 
 		create "UIPadding" {
@@ -3702,7 +3668,7 @@ local function divider_new(section: Section, props: DividerProps): Divider
 			BorderSizePixel = 0,
 			Position = UDim2.fromScale(0, 0.5),
 			Size = UDim2.new(1, 0, 0, 1),
-			theme_tag = "Divider",
+			theme_tag = "Line",
 		},
 	} :: Frame
 	instance.Parent = section.container
@@ -4357,11 +4323,6 @@ local function section_new(tab: Tab, props: SectionProps): Section
 				},
 			},
 		},
-
-		create "UICorner" {
-			CornerRadius = UDim.new(0, 6),
-			theme_tag = "SectionCorner",
-		},
 	} :: Frame
 
 	instance.Parent = tab.content
@@ -4453,7 +4414,7 @@ local function tab_new(window: Window, props: TabProps): Tab
 
 		create "UICorner" {
 			CornerRadius = UDim.new(0, 6),
-			theme_tag = "TabCorner",
+			--theme_tag = "TabCorner",
 		},
 
 		create "UIStroke" {
@@ -5020,7 +4981,7 @@ local function window_new(self: Library, props: WindowProps): Window
 
 		create "UICorner" {
 			CornerRadius = UDim.new(0, 12),
-			theme_tag = "WindowCorner"
+			--theme_tag = "WindowCorner"
 		},
 
 		create "Frame" {
@@ -5241,7 +5202,7 @@ local function window_new(self: Library, props: WindowProps): Window
 
 			create "UICorner" {
 				CornerRadius = UDim.new(0, 12),
-				theme_tag = "WindowCorner"
+				--theme_tag = "WindowCorner"
 			},
 
 			create "UIListLayout" {
@@ -5321,7 +5282,7 @@ local function window_new(self: Library, props: WindowProps): Window
 					BorderSizePixel = 0,
 					Position = UDim2.fromScale(0, 1),
 					Size = UDim2.new(1, 0, 0, 1),
-					theme_tag = "TopbarLine",
+					theme_tag = "Line",
 				},
 
 				create "TextButton" {
