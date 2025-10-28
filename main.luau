@@ -2439,7 +2439,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		else
 			-- if dropdown is closing, make sure they cant still add text to the search box
 			scroll_container.Interactable = false
-			
+
 			if search_box:IsFocused() then
 				search_box:ReleaseFocus()
 			end
@@ -4514,7 +4514,7 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 
 		self.Minimized = true
-	
+
 		position:spring(self.container.Position + UDim2.fromOffset(0, 30), springs.soft)
 		body_transparency:spring(1, springs.fast_soft)
 		container_transparency:spring(1, springs.fast_soft)
@@ -4525,7 +4525,7 @@ local function window_new(self: Library, props: WindowProps): Window
 				element:Close()
 			end
 		end
-		
+
 		repeat task.wait() until body_transparency:isComplete()
 		if body_transparency:get() == 1 then
 			self.container.Visible = false
@@ -4546,7 +4546,7 @@ local function window_new(self: Library, props: WindowProps): Window
 
 		self.Minimized = false
 	end
-	
+
 	local function window_toggle_minimized(self: Window)
 		if self.Minimized then
 			self:Maximize()
@@ -5086,7 +5086,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			},
 		},
 	} :: Frame
-	
+
 	local loading_transparency = motion(1)
 	local loading_scale = motion(0.93)
 
@@ -5282,7 +5282,18 @@ local function window_new(self: Library, props: WindowProps): Window
 					BorderSizePixel = 0,
 					Position = UDim2.fromScale(0, 1),
 					Size = UDim2.new(1, 0, 0, 1),
-					theme_tag = "Line",
+					theme_tag = "Topbar",
+					
+					create "Frame" {
+						AnchorPoint = Vector2.new(0.5, 0),
+						BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+						BackgroundTransparency = 0.1,
+						BorderColor3 = Color3.new(),
+						BorderSizePixel = 0,
+						Position = UDim2.fromScale(0.5, 0),
+						Size = UDim2.new(1, -14, 0, 1),
+						theme_tag = "Line",
+					},
 				},
 
 				create "TextButton" {
@@ -5394,7 +5405,7 @@ local function window_new(self: Library, props: WindowProps): Window
 	window.sidebar = sidebar
 	window.content_container = content_container
 	window.container = container
-	
+
 	table.insert(registry.windows, window)
 	active_window = nil
 
