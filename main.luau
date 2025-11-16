@@ -3647,7 +3647,7 @@ local function divider_new(section: Section, props: DividerProps): Divider
 	local transparency = motion(1)
 	section.visible:listen(function(visible)
 		if visible then
-			transparency:spring(get_themed_property(window, "Divider", "BackgroundTransparency"), springs.soft)
+			transparency:spring(get_themed_property(window, "Line", "BackgroundTransparency"), springs.soft)
 		else
 			transparency:spring(1, springs.soft)
 		end
