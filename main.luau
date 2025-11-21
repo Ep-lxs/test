@@ -2086,8 +2086,10 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 				Visible = item_visible,
 
 				Activated = function()
-					value:set(item)
-					open:set(false)
+					if tab.selected then
+						value:set(item)
+						open:set(false)
+					end
 				end,
 
 				create "UIPadding" {
