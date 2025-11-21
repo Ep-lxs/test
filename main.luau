@@ -2086,10 +2086,8 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 				Visible = item_visible,
 
 				Activated = function()
-					if tab.selected then
-						value:set(item)
-						open:set(false)
-					end
+					value:set(item)
+					open:set(false)
 				end,
 
 				create "UIPadding" {
@@ -2196,7 +2194,9 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 		},
 
 		Activated = function()
-			dropdown_toggle(dropdown :: any)
+			if tab.selected:get() then
+				dropdown_open(dropdown :: any)
+			end
 		end,
 	} :: TextButton
 
