@@ -4921,10 +4921,10 @@ local function window_new(self: Library, props: WindowProps): Window
 		end
 	end
 
-	ENSURE_IMAGE = function(image: string): string
+	ENSURE_IMAGE = function(image: string, name: string?): string
 		ensure_folder(dir)
 		if string.find(image, "http") then
-			local imageDir = `{dir}/lovely.png`
+			local imageDir = if name then `{dir}/{name}.png` else `{dir}/lovely.png`
 
 			if not isfile(imageDir) then
 				local httpRequest = http_request or request
@@ -5471,7 +5471,7 @@ local function window_new(self: Library, props: WindowProps): Window
 			Name = "ImageLabel",
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundTransparency = 1,
-			Image = "rbxassetid://117595184971905",
+			Image = ENSURE_IMAGE(props.IconBlur),
 			ImageColor3 = Color3.fromRGB(254, 160, 248),
 			ImageTransparency = 0.7,
 			ScaleType = Enum.ScaleType.Fit,
@@ -5482,7 +5482,7 @@ local function window_new(self: Library, props: WindowProps): Window
 				Name = "ImageLabel",
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				BackgroundTransparency = 1,
-				Image = "rbxassetid://117997855532783",
+				Image = ENSURE_IMAGE(props.Icon),
 				Position = UDim2.fromScale(0.5, 0.5),
 				ScaleType = Enum.ScaleType.Fit,
 				Size = UDim2.fromOffset(60, 60),
@@ -5753,7 +5753,7 @@ local function window_new(self: Library, props: WindowProps): Window
 				create "ImageLabel" {
 					AnchorPoint = Vector2.new(0, 0.5),
 					BackgroundTransparency = 1,
-					Image = ENSURE_IMAGE(props.Icon),
+					Image = ENSURE_IMAGE(props.Icon), -- real topbar icon
 					Position = UDim2.new(0, 12, 0.5, 0),
 					Size = UDim2.fromOffset(16, 16),
 					ScaleType = Enum.ScaleType.Fit
