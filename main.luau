@@ -986,7 +986,7 @@ local DEFAULT_THEMES = {
 		},
 
 		Topbar = {
-			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
+			BackgroundColor3 = Color3.fromRGB(17,18,19),
 			BackgroundTransparency = 0,
 		},
 		TopbarIcon = {
@@ -997,11 +997,11 @@ local DEFAULT_THEMES = {
 		},
 
 		Sidebar = {
-			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
+			BackgroundColor3 = Color3.fromRGB(17,18,19),
 			BackgroundTransparency = 0,
 		},
 		ContentContainer = {
-			BackgroundColor3 = Color3.fromRGB(9, 10, 11),
+			BackgroundColor3 = Color3.fromRGB(17,18,19),
 			BackgroundTransparency = 0,
 		},  
 
@@ -1013,11 +1013,11 @@ local DEFAULT_THEMES = {
 		},
 
 		Element = {
-			BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+			BackgroundColor3 = Color3.fromRGB(22,23,24),
 			BackgroundTransparency = 0,
 		},
 		ElementStroke = {
-			Color = Color3.fromRGB(15, 16, 17),
+			Color = Color3.fromRGB(25, 26, 27),
 			Transparency = 0,
 		},
 
@@ -1065,16 +1065,16 @@ local DEFAULT_THEMES = {
 
 		Line = {
 			BackgroundTransparency = 0,
-			BackgroundColor3 = Color3.fromRGB(15, 16, 17),
+			BackgroundColor3 = Color3.fromRGB(25, 26, 27),
 		},
 
 		Tab = {
-			BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+			BackgroundColor3 = Color3.fromRGB(22,23,24),
 			SelectedBackgroundTransparency = 0,
 			DeselectedBackgroundTransparency = 1,
 		},
 		TabStroke = {
-			Color = Color3.fromRGB(15, 16, 17),
+			Color = Color3.fromRGB(25, 26, 27),
 		},
 		TabIcon = {
 			SelectedImageColor3 = Color3.fromRGB(253, 158, 247),
@@ -2391,7 +2391,7 @@ local function dropdown_new(section: Section, props: DropdownProps): Dropdown
 	local scroll_container = create "Frame" {
 		Active = true,
 		AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+		BackgroundColor3 = Color3.fromRGB(19, 20, 21),
 		ClipsDescendants = true,
 		Position = UDim2.fromOffset(0, 0),
 		Selectable = true,
@@ -4464,7 +4464,7 @@ local function input_new(section: Section, props: InputProps): Input
 
 	local instance = create "Frame" {
 		AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+		BackgroundColor3 = Color3.fromRGB(19, 20, 21),
 		BackgroundTransparency = section.element_bg_transparency,
 		LayoutOrder = order,
 		Selectable = true,
@@ -5671,7 +5671,7 @@ local function window_new(self: Library, props: WindowProps): Window
 					AnchorPoint = Vector2.new(1, 0.5),
 					AutoButtonColor = false,
 					BackgroundTransparency = clamped_close_transparency,
-					BackgroundColor3 = Color3.fromRGB(13, 14, 15),
+					BackgroundColor3 = Color3.fromRGB(19, 20, 21),
 					Position = UDim2.new(1, -8, 0.5, 0),
 					Size = UDim2.fromOffset(20, 20),
 					Text = "",
