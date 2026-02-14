@@ -1,5 +1,7 @@
 --!strict
 
+local cloneref = cloneref or function(instance) return instance end;
+
 local HttpService = cloneref(game:GetService("HttpService"))
 local Players = cloneref(game:GetService("Players"))
 local RunService = cloneref(game:GetService("RunService"))
@@ -1239,6 +1241,7 @@ local readfile = readfile :: (string) -> string?
 local isfile = isfile :: (string) -> boolean
 
 if RunService:IsStudio() then
+	print"isstudio"
 	local WORKSPACE = Instance.new("Folder")
 	WORKSPACE.Name = "workspace"
 	WORKSPACE.Parent = workspace
@@ -1823,10 +1826,7 @@ local function ensure_gui(): ScreenGui
 		if RunService:IsStudio() then
 			gui.Parent = Players.LocalPlayer.PlayerGui
 		else
-			if protect_gui then
-				protect_gui(gui)
-			end
-			gui.Parent = game:GetService("CoreGui")
+			gui.Parent = cloneref(game:GetService("CoreGui"))
 		end
 	end
 
